@@ -1,0 +1,22 @@
+{
+  "name": "spotamovie-be",
+  "version": "1.0.0",
+  "description": "recommendation for movies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelgimenezgimenez/spotamovie-be.git"
+  },
+  "author": "Miguel Gimenez <gimenezgimenezmiguel@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelgimenezgimenez/spotamovie-be/issues"
+  },
+  "homepage": "https://github.com/miguelgimenezgimenez/spotamovie-be#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
