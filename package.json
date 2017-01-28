@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/miguelgimenezgimenez/spotamovie-be#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "querystring": "^0.2.0",
+    "request": "^2.79.0"
   }
 }

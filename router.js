@@ -7,4 +7,11 @@ router.get('/', function(req, res, next) {
   res.send('hello world');
 });
 
+
+router.post('/signin/spotify', (req,res,next)=>{
+
+
+  
+
+});
 module.exports = router;
