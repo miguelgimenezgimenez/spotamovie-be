@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
+const raccoon = require('./controllers/raccoonController');
 
 let songs = [];
 let access_token = '';
@@ -36,23 +37,44 @@ router.post('/login', function(req, res, next) {
       options['url'] = 'https://api.spotify.com/v1/me';
 
       request.get(options, (error, response, body) => {
+        if (error) {
+          res.send({ error });
+          return;
+        }
         user_id = body.id;
         // send user profile
         res.send(body);
         // retrieve current user's playlists
         options['url'] = 'https://api.spotify.com/v1/me/playlists';
         request.get(options, (error, response, body) => {
+          if (error) {
+            res.send({ error });
+            return;
+          }
           const playlists = body.items.map((playlist) => playlist.id);
 
           // iterate thru each playlist to retrieve all songs
           playlists.forEach((playlist_id) => {
             options['url'] = `https://api.spotify.com/v1/users/${user_id}/playlists/${playlist_id}/tracks`;
             request.get(options, (error, response, body) => {
-                body.items.forEach((song) => {
-                  if (songs.includes(song.track.id)) return;
-                  songs.push(song.track.id);
+              if (error) {
+                res.send({ error });
+                return;
+              }
+              body.items.forEach((song) => {
+                if (songs.includes(song.track.id)) return;
+                songs.push(song.track.id);
+              });
+              // send songs and user_id to raccoon; use prefix to help label them as Spotify song id's
+              songs.forEach((song) => {
+                raccoon.like('SP-' + song, user_id)
+                .then(() => {
+                  raccoon.stat.recommendFor(user_id, 5)
+                  .then((recs) => {
+                    console.log('recs for ', user_id, ': ', recs);
+                  });
                 });
-                // TODO: send songs and user_id to raccoon
+              });
             });
           });
         });
