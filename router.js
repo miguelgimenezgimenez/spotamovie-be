@@ -22,9 +22,21 @@ router.post('/login', function(req, res, next) {
   };
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
-      console.log(response.body.access_token, 'response');
-    }
+      //make api request to retrieve user profile
+      const access_token = response.body.access_token;
 
+      const options = {
+         url: 'https://api.spotify.com/v1/me',
+         headers: { 'Authorization': 'Bearer ' + access_token },
+         json: true
+       };
+
+       // use the access token to access the Spotify Web API
+       return request.get(options, function(error, response, body) {
+         res.send(body);
+       });
+    }
+    res.send({ error });
   });
 });
 
