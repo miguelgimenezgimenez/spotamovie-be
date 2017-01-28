@@ -3,7 +3,8 @@ const router = express.Router();
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
 
-/* GET home page. */
+let songs = [];
+
 router.post('/login', function(req, res, next) {
   const body = (req.body);
   const authOptions = {
@@ -21,22 +22,38 @@ router.post('/login', function(req, res, next) {
     json: true
   };
   request.post(authOptions, function(error, response, body) {
+    let user_id;
     if (!error && response.statusCode === 200) {
       //make api request to retrieve user profile
       const access_token = response.body.access_token;
-
       const options = {
-         url: 'https://api.spotify.com/v1/me',
-         headers: { 'Authorization': 'Bearer ' + access_token },
-         json: true
-       };
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+      };
 
-       // use the access token to access the Spotify Web API
-       return request.get(options, function(error, response, body) {
-         res.send(body);
-       });
-    }
-    res.send({ error });
+      // retreive user profile
+      options['url'] = 'https://api.spotify.com/v1/me';
+
+      request.get(options, (error, response, body) => {
+        user_id = body.id;
+
+        // retrieve current user's playlists
+        options['url'] = 'https://api.spotify.com/v1/me/playlists';
+        request.get(options, (error, response, body) => {
+          const playlists = body.items.map((playlist) => playlist.id);
+
+          // iterate thru each playlist to retrieve all songs
+          playlists.map((playlist_id) => {
+            options['url'] = `https://api.spotify.com/v1/users/${user_id}/playlists/${playlist_id}/tracks`;
+            request.get(options, (error, response, body) => {
+                songs = body.items.map((song) => song.track.id);
+                res.send({ songs });
+            });
+          });
+        });
+      });
+
+  } else res.send({ error });
   });
 });
 
