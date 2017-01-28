@@ -4,6 +4,7 @@ const Buffer = require('buffer/').Buffer;
 const request = require('request');
 
 let songs = [];
+let access_token = '';
 
 router.post('/login', function(req, res, next) {
   const body = (req.body);
@@ -12,7 +13,7 @@ router.post('/login', function(req, res, next) {
     form: {
       code: body.code,
       redirect_uri: body.redirect_uri,
-      grant_type: 'authorization_code'
+      grant_type: body.grant_type
     },
     headers: {
       'Authorization': 'Basic ' + (new Buffer(body.client_id + ':' + body.client_secret).toString('base64')),
@@ -25,7 +26,7 @@ router.post('/login', function(req, res, next) {
     let user_id;
     if (!error && response.statusCode === 200) {
       //make api request to retrieve user profile
-      const access_token = response.body.access_token;
+      access_token = response.body.access_token;
       const options = {
         headers: { 'Authorization': 'Bearer ' + access_token },
         json: true
