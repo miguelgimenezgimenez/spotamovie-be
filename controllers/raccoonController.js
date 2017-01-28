@@ -1,4 +1,4 @@
-import raccoon from 'raccoon';
+const raccoon = require('raccoon');
 raccoon.connect(6379, '127.0.0.1');
 
 const raccoonController={};
@@ -15,4 +15,4 @@ raccoonController.recommend=(req,res)=>{
   });
 };
 
-export default raccoonController;
+module.export = raccoonController;
