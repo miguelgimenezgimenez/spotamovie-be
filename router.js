@@ -37,24 +37,27 @@ router.post('/login', function(req, res, next) {
 
       request.get(options, (error, response, body) => {
         user_id = body.id;
-
+        // send user profile
+        res.send(body);
         // retrieve current user's playlists
         options['url'] = 'https://api.spotify.com/v1/me/playlists';
         request.get(options, (error, response, body) => {
           const playlists = body.items.map((playlist) => playlist.id);
 
           // iterate thru each playlist to retrieve all songs
-          playlists.map((playlist_id) => {
+          playlists.forEach((playlist_id) => {
             options['url'] = `https://api.spotify.com/v1/users/${user_id}/playlists/${playlist_id}/tracks`;
             request.get(options, (error, response, body) => {
-                songs = body.items.map((song) => song.track.id);
-                res.send({ songs });
+                body.items.forEach((song) => {
+                  if (songs.includes(song.track.id)) return;
+                  songs.push(song.track.id);
+                });
+                // TODO: send songs and user_id to raccoon
             });
           });
         });
       });
-
-  } else res.send({ error });
+    } else res.send({ error });
   });
 });
 
