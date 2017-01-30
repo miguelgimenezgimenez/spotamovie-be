@@ -1,8 +1,9 @@
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
 const raccoon = require('./raccoonController');
-
+const userController = require('./userController');
 // const spotifyAPI = new require('../spotifyAPI')()
+const config = require('../config/spotifyConfig');
 
 let songs = [];
 const loginController = {};
@@ -21,6 +22,13 @@ loginController.login = (req, res, next) => {
     // retrieve the user from DB
     // save it in the DB if it doesn't exist
     // res.sending the user info
+    if (userController.getUser(userInfo.id)){
+      userController.setToken(userInfo.id,access_token);
+    }
+    else{
+      userController.newUser(userInfo,access_token);
+    }
+
     const user = userInfo; // This actually has to be the DB record
     console.log('user', user);
     res.send(user);
@@ -40,7 +48,7 @@ const authOptions = (body) => ({
     grant_type: body.grant_type
   },
   headers: {
-    'Authorization': 'Basic ' + (new Buffer(body.client_id + ':' + body.client_secret).toString('base64')),
+    'Authorization': 'Basic ' + (new Buffer(config.client_id + ':' + config.client_secret).toString('base64')),
     'Accept': 'application/json',
     'Content-Type':'application/json'
   },
