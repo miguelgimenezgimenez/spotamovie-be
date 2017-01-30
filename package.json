@@ -4,7 +4,7 @@
   "description": "recommendation for movies",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,16 @@
   "dependencies": {
     "body-parser": "^1.16.0",
     "buffer": "^5.0.2",
+    "config": "^1.24.0",
     "express": "^4.14.0",
+    "mongoose": "^4.8.0",
+    "morgan": "^1.7.0",
     "raccoon": "^0.2.3",
     "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }
