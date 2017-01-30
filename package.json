@@ -24,6 +24,7 @@
     "mongoose": "^4.8.0",
     "morgan": "^1.7.0",
     "raccoon": "^0.2.3",
+    "redis": "^2.6.5",
     "request": "^2.79.0"
   },
   "devDependencies": {

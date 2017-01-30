@@ -1,18 +1,20 @@
 const raccoon = require('raccoon');
+
 raccoon.connect(6379, '127.0.0.1');
 
 const raccoonController={};
 
-const cb=()=>{};
-
-raccoonController.like=(req,res)=>{
-  raccoon.liked(req.userID, req.ItemId, cb);
-};
-
-raccoonController.recommend=(req,res)=>{
-  raccoon.recommendFor('userId', 1, function(results){
-    console.log(results);
+raccoonController.liked = (userId, itemId, cb) => {
+  raccoon.liked(userId, itemId, () => {
+    cb();
   });
 };
 
-module.export = raccoonController;
+raccoonController.recommend = (req, res, cb) => {
+  return raccoon.recommendFor('userId', 1, function(results){
+    console.log(results);
+    cb(results);
+  });
+};
+
+module.exports = raccoonController;
