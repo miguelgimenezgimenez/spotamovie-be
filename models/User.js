@@ -7,7 +7,7 @@ const UserSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     userToken: { type: String, required: false },
-    spotifyId: { type: Number, required: true },
+    spotifyId: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
   }
 );
