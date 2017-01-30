@@ -2,10 +2,10 @@ const Buffer = require('buffer/').Buffer;
 const request = require('request');
 const raccoon = require('./raccoonController');
 const userController = require('./userController');
+const songController = require('./songController');
 // const spotifyAPI = new require('../spotifyAPI')()
 const config = require('../config/spotifyConfig');
 
-let songs = [];
 const loginController = {};
 
 loginController.login = (req, res, next) => {
@@ -26,7 +26,7 @@ loginController.login = (req, res, next) => {
     // res.sending the user info
     return userController.getUser(userInfo.id);
   })
-  .then((user)=>{
+  .then((user) => {
     if (user.length > 0) {
       return userController.setToken(user[0].spotifyId,access_token);
     }
@@ -34,9 +34,10 @@ loginController.login = (req, res, next) => {
     return userController.newUser(spotifyUserProfile,access_token);
     }
   })
-  .then(user=>{
+  .then(user => {
     res.send(user);
-    // return processData(user, access_token);
+
+    return songController.processData(user, access_token);
   })
   .catch(err => {
     res.send(err);
