@@ -1,8 +1,6 @@
-// const express = require('express');
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
-const Promise = require('bluebird');
-const raccoon = Promise.promisifyAll(require('./raccoonController'));
+const raccoon = require('./raccoonController');
 
 // const spotifyAPI = new require('../spotifyAPI')()
 
