@@ -1,6 +1,5 @@
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
-const raccoon = require('./raccoonController');
 const userController = require('./userController');
 const songController = require('./songController');
 // const spotifyAPI = new require('../spotifyAPI')()

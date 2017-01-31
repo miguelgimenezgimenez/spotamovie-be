@@ -1,4 +1,5 @@
 const raccoon = require('raccoon');
+raccoon.config.className = 'spotamovie';
 
 raccoon.connect(6379, '127.0.0.1');
 
