@@ -4,6 +4,10 @@ module.exports = {
         "commonjs": true,
         "es6": true
     },
+    "globals": {
+      "process": true,
+      "__dirname": true
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module"
