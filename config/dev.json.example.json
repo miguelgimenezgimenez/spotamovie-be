@@ -1,6 +1,6 @@
 {
   "DBHost": "mongodb://localhost/spotamovie",
-  "client_id" : "xxxxxxxxxxxx",
-  "client_secret" : "xxxxxxxxxxxx",
-  "redirect_uri" : "spotamovie://callback",
+  "SPOTIFY_CLIENT_ID" : "xxxxxxxxxxxx",
+  "SPOTIFY_CLIENT_SECRET" : "xxxxxxxxxxxx",
+  "SPOTIFY_REDIRECT_URI" : "spotamovie://callback",
 }
