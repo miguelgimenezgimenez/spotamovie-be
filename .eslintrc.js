@@ -6,7 +6,10 @@ module.exports = {
     },
     "globals": {
       "process": true,
-      "__dirname": true
+      "__dirname": true,
+      "describe": true,
+      "beforeEach": true,
+      "it": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
