@@ -1,8 +1,5 @@
 process.env.NODE_ENV = 'test';
 const mongoose = require('mongoose');
-const User = require('../models/User');
-const Buffer = require('buffer/').Buffer;
-const nconf = require('../config/nconf');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -11,12 +8,7 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
-describe('Users', () => {
-  beforeEach((done) => {
-    User.remove({}, (err) => {
-      done();
-    });
-  });
+describe('Movies', () => {
 
   // Test Login
   describe('/login POST user', () => {
@@ -33,4 +25,18 @@ describe('Users', () => {
       });
     });
   });
+
+  describe('/movies/{movie_id}/like POST like', () => {
+     it('it should allow posting an item liked by a particular user', (done) => {
+       const movie_id = 'TESTxxxxxxxx';
+       chai.request(server)
+        .post(`/movies/${movie_id}/like`)
+        .field('token', '2j3j3k3kl2lk34j2lsois')
+        .end((err, res) => {
+          res.should.have.status(201);
+        done();
+      });
+    });
+  });
+
 });
