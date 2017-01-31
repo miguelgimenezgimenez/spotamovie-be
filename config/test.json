@@ -1,0 +1,6 @@
+{
+    "DBHost": "mongodb://localhost/spotamovieTest",
+    "client_id" : "xxxxxxxxx",
+    "client_secret" : "xxxxxxxxxx",
+    "redirect_uri" : "spotamovie://callback",
+}
