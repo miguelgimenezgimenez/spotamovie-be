@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const server = 'https://private-77bd5f-spotamovie.apiary-mock.com';
+const token = 'test2j3j3k3kl2lk34j2lsois';
 let should = chai.should();
 
 chai.use(chaiHttp);
@@ -31,7 +32,20 @@ describe('Movies', () => {
        const movie_id = 'TESTxxxxxxxx';
        chai.request(server)
         .post(`/movies/${movie_id}/like`)
-        .field('token', '2j3j3k3kl2lk34j2lsois')
+        .field('token', token)
+        .end((err, res) => {
+          res.should.have.status(201);
+        done();
+      });
+    });
+  });
+
+  describe('/movies/{movie_id}/dislike POST dislike', (movie_id) => {
+     it('it should allow posting an item disliked by a particular user', (done) => {
+       const movie_id = 'TESTyyyyyyyy';
+       chai.request(server)
+        .post(`/movies/${movie_id}/dislike`)
+        .field('token', token)
         .end((err, res) => {
           res.should.have.status(201);
         done();
