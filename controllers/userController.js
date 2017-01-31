@@ -24,8 +24,6 @@ userController.setToken=(id,token)=>{
   });
 };
 
-
-
 userController.newUser=(userInfo,token)=>{
   return new Promise((resolve,reject)=>{
     const newUser =  new UserSchema({

@@ -37,7 +37,6 @@ const processPlaylists = (playlists, options, userId) => {
   return new Promise((resolve, reject) => {
     getSongs(playlists, options,userId)
     .then((allSongs)=>{
-      console.log(allSongs);
       resolve(allSongs);
     }
   )

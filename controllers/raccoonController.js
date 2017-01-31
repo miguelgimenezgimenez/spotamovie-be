@@ -13,7 +13,6 @@ raccoonController.liked = (userId, itemId, cb) => {
 
 raccoonController.recommend = (req, res, cb) => {
   return raccoon.recommendFor('userId', 1, function(results){
-    console.log(results);
     cb(results);
   });
 };
