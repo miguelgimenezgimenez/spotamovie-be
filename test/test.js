@@ -32,7 +32,7 @@ describe('Movies', () => {
        const movie_id = 'TESTxxxxxxxx';
        chai.request(server)
         .post(`/movies/${movie_id}/like`)
-        .field('token', token)
+        .set('Authorization', 'Bearer')
         .end((err, res) => {
           res.should.have.status(201);
         done();
@@ -45,9 +45,23 @@ describe('Movies', () => {
        const movie_id = 'TESTyyyyyyyy';
        chai.request(server)
         .post(`/movies/${movie_id}/dislike`)
-        .field('token', token)
+        .set('Authorization', 'Bearer')
         .end((err, res) => {
           res.should.have.status(201);
+        done();
+      });
+    });
+  });
+
+  describe('/movies/recommendation GET recommendation', () => {
+     it('it should return a movie recommendation for a particular user', (done) => {
+       chai.request(server)
+        .get('/movies/recommendation')
+        .set('Authorization', 'Bearer')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('movie_id');
         done();
       });
     });
