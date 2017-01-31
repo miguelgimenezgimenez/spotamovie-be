@@ -4,6 +4,8 @@
   "description": "recommendation for movies",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "NODE_ENV=dev nodemon",
     "test": "mocha --timeout 10000"
   },
   "repository": {
