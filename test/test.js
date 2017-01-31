@@ -67,4 +67,19 @@ describe('Movies', () => {
     });
   });
 
+  describe('/movies/survey GET survey', () => {
+     it('it should return a list of movies for a user survey', (done) => {
+       chai.request(server)
+        .get('/movies/survey')
+        .set('Authorization', 'Bearer')
+        .end((err, res) => {
+          const result = res.text;
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('movies');
+        done();
+      });
+    });
+  });
+
 });
