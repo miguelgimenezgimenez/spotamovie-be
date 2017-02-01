@@ -28,7 +28,9 @@ const getPlaylists = (options) => {
   return new Promise((resolve, reject) => {
     request.get(options, (error, response, body) => {
       if (error) return reject(error);
-      return resolve(body.items.map((playlist) => playlist.id));
+      if (body.items) {
+        return resolve(body.items.map((playlist) => playlist.id));
+      }
     });
   });
 };
