@@ -1,16 +1,10 @@
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
+//local imports
 const userController = require('./userController');
 const songController = require('./songController');
-// const spotifyAPI =  new require('../auth/spotifyAPI')();
 const config = require('../config/spotifyConfig');
-// const localAuth = require('../auth/local');
-// const bcrypt = require('../auth/bcrypt');
 const loginController = {};
-
-
-
-
 
 loginController.login = (req, res, next) => {
   const body = (req.body);
