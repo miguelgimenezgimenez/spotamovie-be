@@ -1,7 +1,7 @@
 const request = require('request');
-const raccoonController = require('./raccoonController');
 const userController = require('./userController');
 const UserSchema =require('../models/User');
+const raccoon = require('raccoon');
 
 let movieController = {};
 
@@ -13,8 +13,15 @@ movieController.like=(req,res)=>{
   .then(response=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
-      raccoonController.liked(userId,`MOVIE${req.params.movieId}`, ()=>{
-        console.log('user liked');
+      const movieId=req.params.movieId;
+      raccoon.allLikedFor(userId,results => {
+        for (var i = 0; i < results.length; i++) {
+          if (movieId===results[i]) return;
+        }
+        raccoon.liked(userId,movieId, ()=>{
+          console.log(userId,'liked',movieId);
+        });
+
       });
       return res.sendStatus(200);
     }
@@ -30,8 +37,17 @@ movieController.dislike=(req,res)=>{
   .then(response=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
-      raccoonController.dislike(userId,`MOVIE${req.params.movieId}`, ()=>{
+      const movieId=req.params.movieId;
+      raccoon.allDislikedFor(userId,results => {
+        for (var i = 0; i < results.length; i++) {
+          if (movieId===results[i]) return;
+        }
+        raccoon.disliked(userId,movieId, ()=>{
+          console.log(userId,'disliked',movieId);
+        });
+
       });
+
       return res.sendStatus(200);
     }
     return res.sendStatus(401);
@@ -39,7 +55,7 @@ movieController.dislike=(req,res)=>{
   });
 };
 movieController.recommendation=(req,res)=>{
-  raccoonController.recommendFor(req.body.userId,1, (recs)=>{
+  raccoon.recommendFor(req.body.userId,1, (recs)=>{
     console.log(recs);
   });
 };
