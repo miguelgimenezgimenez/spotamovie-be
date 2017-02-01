@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const config = require('config');
 const app = express();
 const morgan = require('morgan');
-
+//local require\
 const db=require('./db');
 const router = require('./router.js');
 
@@ -15,7 +15,6 @@ if(config.util.getEnv('NODE_ENV') !== 'test') {
 
 app.use(bodyParser.json());
 app.use(router);
-
 
 app.listen(8888, function () {
   console.log('Listening on port 8888');

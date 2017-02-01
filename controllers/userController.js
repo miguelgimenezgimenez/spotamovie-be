@@ -14,16 +14,15 @@ userController.getUser=(id=>{
     });
   });
 });
+
 userController.setToken=(id,token)=>{
   return new Promise((resolve,reject)=>{
     var options = {new: true};
     UserSchema.findOneAndUpdate({spotifyId:id},{$set:{userToken:token}},options,((err,user)=>{
       return resolve(user);
     }));
-
   });
 };
-
 userController.newUser=(userInfo,token)=>{
   return new Promise((resolve,reject)=>{
     const newUser =  new UserSchema({
