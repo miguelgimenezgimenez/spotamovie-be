@@ -28,9 +28,9 @@ userController.setToken=(id,token)=>{
 userController.newUser=(userInfo,token)=>{
   return new Promise((resolve,reject)=>{
     const newUser =  new UserSchema({
-      name: userInfo.display_name,
-      email:userInfo.email,
-      spotifyId:userInfo.id,
+      name: userInfo.body.display_name,
+      email:userInfo.body.email,
+      spotifyId:userInfo.body.id,
       userToken:token,
     });
     newUser.save((err,user) => {
