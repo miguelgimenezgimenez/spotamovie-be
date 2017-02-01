@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-const server = 'https://private-77bd5f-spotamovie.apiary-mock.com';
-const token = 'test2j3j3k3kl2lk34j2lsois';
+const server = require('../index');
 let should = chai.should();
+const nconf = require('../config/nconf.js');
 
 chai.use(chaiHttp);
 
@@ -16,8 +16,8 @@ describe('Movies', () => {
      it('it should allow user to login using Spotify credentials', (done) => {
        chai.request(server)
         .post('/login')
-        .field('code', 'auth_code_3838383838383')
-        .field('redirect_uri','spotamovie://callback')
+        .field('code', nconf.get('SPOTIFY_CLIENT_ID'))
+        .field('redirect_uri', nconf.get('SPOTIFY_REDIRECT_URI'))
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
