@@ -1,6 +1,7 @@
 const request = require('request');
 const raccoon = require('raccoon');
 let songController = {};
+const loginController = require('./loginController');
 
 const authHeaders = (auth_token) => ({
   headers: { 'Authorization': 'Bearer ' + auth_token },
@@ -9,24 +10,39 @@ const authHeaders = (auth_token) => ({
 
 let songs = [];
 
-songController.processData = (user, access_token) => {
+songController.storePlaylists = (user, access_token,req) => {
   const options = authHeaders(access_token);
   options['url'] = 'https://api.spotify.com/v1/me/playlists';
-  getPlaylists(options)
+  // getPlaylists(options,req)
+  req.spotifyApi.getUserPlaylists(user.spotifyId)
   .then((playlists) => {
     if (playlists) {
-      return processPlaylists(playlists, options, user.spotifyId)        ;
+      return processPlaylists(playlists, options, user.spotifyId) ;
     }
     else console.log('no playlists');
   })
   .then(songs => {
     likeSongs(songs, user.spotifyId);
+  })
+  .catch((err) => {
+
   });
 };
 
-const getPlaylists = (options) => {
+const getPlaylists = (options,req) => {
   return new Promise((resolve, reject) => {
     request.get(options, (error, response, body) => {
+      if(body.error) {
+        if (body.error.status===401) {
+          req.spotifyApi.refreshAccessToken()
+          .then(res=>{
+            options = authHeaders(req.spotifyApi._credentials.accessToken);
+            options['url'] = 'https://api.spotify.com/v1/me/playlists';
+            return;
+          });
+        }
+      }
+      // console.log(options, "OPTION");
       if (error) return reject(error);
       if (body.items) {
         return resolve(body.items.map((playlist) => playlist.id));

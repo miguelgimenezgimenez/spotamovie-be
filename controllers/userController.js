@@ -5,23 +5,23 @@ const songController = require('./songController');
 const userController={};
 
 userController.me=((req,res,next)=>{
+  console.log('ME');
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
-
   userController.getUser(token)
   .then(response=>{
-    if ((Date.now()-response[0].loginDate)/60000>24) {
-      songController.processData(response[0]);
-    }
+    // if ((Date.now()-response[0].loginDate)/60000>24) {
+      songController.storePlaylists(response[0],token,req);
+    // }
     if (response.length>0) return res.send(response[0]);
     return res.sendStatus(401);
   });
 });
 
-userController.getUser=(id=>{
+userController.getUser=(token=>{
   const output={};
   return new Promise((resolve,reject)=>{
-    UserSchema.find({spotifyId:id})
+    UserSchema.find({userToken:token})
     .then((user,err)=>{
       return resolve(user);
     });
@@ -47,9 +47,9 @@ userController.updateUser=(id,token)=>{
   userController.newUser=(userInfo,token)=>{
     return new Promise((resolve,reject)=>{
       const newUser =  new UserSchema({
-        name: userInfo.display_name,
-        email:userInfo.email,
-        spotifyId:userInfo.id,
+        name: userInfo.body.display_name,
+        email:userInfo.body.email,
+        spotifyId:userInfo.body.id,
         userToken:token,
         loginDate:Date.now(),
       });

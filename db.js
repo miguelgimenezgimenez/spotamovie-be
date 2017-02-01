@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const config = require('config');
-const raccoon=require('raccoon');
+const nconf = require('./config/nconf');
+const raccoon = require('raccoon');
 raccoon.connect(6379, '127.0.0.1');
 
 let options = {
@@ -8,7 +8,7 @@ let options = {
                 replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } }
               };
 
-mongoose.connect(config.DBHost);
+mongoose.connect(nconf.get('DBHost'));
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
