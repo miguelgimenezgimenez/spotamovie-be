@@ -2,15 +2,9 @@ const Buffer = require('buffer/').Buffer;
 const request = require('request');
 const userController = require('./userController');
 const songController = require('./songController');
-// const spotifyAPI =  new require('../auth/spotifyAPI')();
-const config = require('../config/spotifyConfig');
-// const localAuth = require('../auth/local');
-// const bcrypt = require('../auth/bcrypt');
+const nconf = require('../config/nconf');
+
 const loginController = {};
-
-
-
-
 
 loginController.login = (req, res, next) => {
   const body = (req.body);
@@ -53,11 +47,11 @@ const authOptions = (body) => ({
   url: 'https://accounts.spotify.com/api/token',
   form: {
     code: body.code,
-    redirect_uri: config.redirect_uri,
+    redirect_uri: nconf.get('SPOTIFY_REDIRECT_URI'),
     grant_type: 'authorization_code'
   },
   headers: {
-    'Authorization': 'Basic ' + (new Buffer(config.client_id + ':' + config.client_secret).toString('base64')),
+    'Authorization': 'Basic ' + (new Buffer(nconf.get('SPOTIFY_CLIENT_ID') + ':' + nconf.get('SPOTIFY_CLIENT_SECRET')).toString('base64')),
     'Accept': 'application/json',
     'Content-Type':'application/json'
   },

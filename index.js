@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const config = require('config');
 const app = express();
 const morgan = require('morgan');
 const spotifyApi = require('./lib/spotifyWebApi');
@@ -9,7 +8,7 @@ const db=require('./db');
 const router = require('./router.js');
 
 //don't show the log when it is test
-if(config.util.getEnv('NODE_ENV') !== 'test') {
+if(process.env.NODE_ENV !== 'test') {
     //use morgan to log at command line
     app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
 }
