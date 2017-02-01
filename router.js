@@ -5,7 +5,9 @@ const request = require('request');
 const raccoon = require('./controllers/raccoonController');
 const loginController = require('./controllers/loginController');
 const movieController = require('./controllers/movieController');
+const userController = require('./controllers/userController');
 
+router.get('/me', userController.me);
 router.post('/login', loginController.login);
 router.post('/movies/:movieId/like', movieController.like);
 // router.post('/movies/:movieId/dislike', movieController.dislike);

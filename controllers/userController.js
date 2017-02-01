@@ -5,10 +5,12 @@ const UserSchema =require('../models/User');
 const userController={};
 
 
-userController.getUser=(id=>{
+
+
+userController.getUser=(token=>{
   const output={};
   return new Promise((resolve,reject)=>{
-    UserSchema.find({spotifyId:id})
+    UserSchema.find({userToken:token})
     .then((user,err)=>{
       return resolve(user);
     });
@@ -35,7 +37,8 @@ userController.newUser=(userInfo,token)=>{
       if(err) {
         console.log(err);
       }
-      else { //If no errors, send it back to the client
+      else {
+        //If no errors, send it back to the client
         return resolve(user);
       }
     });

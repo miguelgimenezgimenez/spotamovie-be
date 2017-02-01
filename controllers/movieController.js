@@ -1,6 +1,7 @@
 const request = require('request');
 const raccoonController = require('./raccoonController');
 const localAuth = require('../auth/local');
+const UserSchema =require('../models/User');
 
 
 
@@ -8,16 +9,29 @@ let movieController = {};
 
 
 movieController.like=(req,res)=>{
-console.log(req.headers);
-  // raccoonController.liked(req.body.userId,`MOVIE${req.params.movieId}`, ()=>{
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    console.log(response);
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      raccoonController.liked(userId,`MOVIE${req.params.movieId}`, ()=>{
+      console.log(userId, 'liked', req.params.movieId);
+      });
 
-    // console.log(req.body.userId, 'liked', req.params.movieId);
-  // });
+    }
+
+  });
 };
 
 movieController.disliked=(req,res)=>{
-  raccoonController.liked(`MOVIE${req.params.movieId}`, req.body.userId, ()=>{
-    console.log(req.body.userId, 'liked', req.params.movieId);
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    const userId=response[0].spotifyId;
+    raccoonController.disliked(userId,`MOVIE${req.params.movieId}`, ()=>{
+    console.log(userId, 'liked', req.params.movieId);
+    });
   });
 };
 movieController.recommendation=(req,res)=>{

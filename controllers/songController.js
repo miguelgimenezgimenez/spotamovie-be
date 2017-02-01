@@ -78,7 +78,7 @@ const getSongsByPlaylist=(playlist_id,options,userId)=>{
 
 const likeSongs = (songs, userId) => {
   songs.forEach(song => {
-    raccoonController.liked(`SP${song}`, userId, ()=>{
+    raccoonController.liked(userId,`SP${song}`, ()=>{
     });
   });
 };

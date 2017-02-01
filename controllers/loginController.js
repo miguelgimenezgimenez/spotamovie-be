@@ -2,24 +2,26 @@ const Buffer = require('buffer/').Buffer;
 const request = require('request');
 const userController = require('./userController');
 const songController = require('./songController');
-const spotifyAPI =  new require('../auth/spotifyAPI')();
+// const spotifyAPI =  new require('../auth/spotifyAPI')();
 const config = require('../config/spotifyConfig');
-const localAuth = require('../auth/local');
-const bcrypt = require('../auth/bcrypt');
+// const localAuth = require('../auth/local');
+// const bcrypt = require('../auth/bcrypt');
 const loginController = {};
+
+
+
+
 
 loginController.login = (req, res, next) => {
   const body = (req.body);
   let access_token;
   let spotifyUserProfile;
-  let encodedToken;
-
   getToken(body)
   .then(token => {
     // spotifyAPI.setAccesToken(token);
     access_token = token;
-    encodedToken= localAuth.encodeToken(token);
-    spotifyAPI[token]=encodedToken;
+    // encodedToken= localAuth.encodeToken(token);
+    // spotifyAPI[token]=encodedToken;
     return getUserInfo(token);
   })
   .then(userInfo => {
@@ -27,14 +29,14 @@ loginController.login = (req, res, next) => {
     // retrieve the user from DB
     // save it in the DB if it doesn't exist
     // res.sending the user info
-    return userController.getUser(userInfo.id);
+    return userController.getUser(access_token);
   })
   .then((user) => {
     if (user.length > 0) {
-      return userController.setToken(user[0].spotifyId,encodedToken);
+      return userController.setToken(user[0].spotifyId,access_token);
     }
     else{
-      return userController.newUser(spotifyUserProfile,encodedToken);
+      return userController.newUser(spotifyUserProfile,access_token);
     }
   })
   .then(user => {
