@@ -12,10 +12,7 @@ loginController.login = (req, res, next) => {
   let spotifyUserProfile;
   getToken(body)
   .then(token => {
-    // spotifyAPI.setAccesToken(token);
     access_token = token;
-    // encodedToken= localAuth.encodeToken(token);
-    // spotifyAPI[token]=encodedToken;
     return getUserInfo(token);
   })
   .then(userInfo => {
