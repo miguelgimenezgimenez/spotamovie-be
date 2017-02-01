@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const config = require('config');
 const app = express();
 const morgan = require('morgan');
-const spotifyAPI = require('spotify-web-api-node');
+const spotifyApi = require('./lib/spotifyWebApi');
 //local require\
 const db=require('./db');
 const router = require('./router.js');
@@ -15,7 +15,9 @@ if(config.util.getEnv('NODE_ENV') !== 'test') {
 }
 
 app.use(bodyParser.json());
-app.use(spotifyAPI);
+app.use(function(req, res, next){
+  req.spotifyApi = spotifyApi;
+});
 app.use(router);
 
 app.listen(8888, function () {
