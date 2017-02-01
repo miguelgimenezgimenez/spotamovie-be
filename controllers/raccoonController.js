@@ -5,6 +5,7 @@ raccoon.config.className = 'spotamovie';
 const raccoonController={};
 
 raccoonController.liked = (userId, itemId, cb) => {
+  
   raccoon.liked(userId, itemId, () => {
     cb();
   });

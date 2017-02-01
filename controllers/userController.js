@@ -10,8 +10,7 @@ userController.me=((req,res,next)=>{
   const token =req.headers.authorization.split(' ')[1];
   userController.getUser(token)
   .then(response=>{
-    console.log((Date.now()-response[0].loginDate)/60000, 'time');
-    if ((Date.now()-response[0].loginDate)>(24)) {
+    if ((Date.now()-response[0].loginDate)/60000>24) {
       userController.processData(response[0]);
     }
     if (response.length>0) return res.send(response[0]);
