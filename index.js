@@ -16,6 +16,7 @@ if(process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(function(req, res, next){
   req.spotifyApi = spotifyApi;
+  next();
 });
 app.use(router);
 
