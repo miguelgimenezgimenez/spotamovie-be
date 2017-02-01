@@ -4,8 +4,15 @@ const UserSchema =require('../models/User');
 
 const userController={};
 
-
-
+userController.me=((req,res,next)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  userController.getUser(token)
+  .then(response=>{
+    if (response.length>0) return res.send(response[0]);
+    return res.sendStatus(401);
+  });
+});
 
 userController.getUser=(token=>{
   const output={};

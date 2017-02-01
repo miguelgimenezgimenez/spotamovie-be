@@ -12,11 +12,9 @@ movieController.like=(req,res)=>{
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
   .then(response=>{
-    console.log(response);
     if (response.length>0) {
       const userId=response[0].spotifyId;
       raccoonController.liked(userId,`MOVIE${req.params.movieId}`, ()=>{
-      console.log(userId, 'liked', req.params.movieId);
       });
 
     }
@@ -30,7 +28,6 @@ movieController.disliked=(req,res)=>{
   .then(response=>{
     const userId=response[0].spotifyId;
     raccoonController.disliked(userId,`MOVIE${req.params.movieId}`, ()=>{
-    console.log(userId, 'liked', req.params.movieId);
     });
   });
 };
