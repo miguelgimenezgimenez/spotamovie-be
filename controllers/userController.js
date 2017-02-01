@@ -2,35 +2,34 @@ const mongoose = require('mongoose');
 const UserSchema =require('../models/User');
 const songController = require('./songController');
 
-
 const userController={};
 
 userController.me=((req,res,next)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
+
   userController.getUser(token)
   .then(response=>{
     if ((Date.now()-response[0].loginDate)/60000>24) {
-      userController.processData(response[0]);
+      songController.processData(response[0]);
     }
     if (response.length>0) return res.send(response[0]);
     return res.sendStatus(401);
   });
 });
 
-userController.getUser=(token=>{
+userController.getUser=(id=>{
   const output={};
   return new Promise((resolve,reject)=>{
-    UserSchema.find({userToken:token})
+    UserSchema.find({spotifyId:id})
     .then((user,err)=>{
       return resolve(user);
     });
   });
 });
 
-userController.setToken=(id,token)=>{
+userController.updateUser=(id,token)=>{
   return new Promise((resolve,reject)=>{
-    console.log('sseet');
     var options = {new: true};
     UserSchema.findOneAndUpdate({userToken:token},
       {
@@ -44,6 +43,7 @@ userController.setToken=(id,token)=>{
       }));
     });
   };
+
   userController.newUser=(userInfo,token)=>{
     return new Promise((resolve,reject)=>{
       const newUser =  new UserSchema({
@@ -52,7 +52,6 @@ userController.setToken=(id,token)=>{
         spotifyId:userInfo.id,
         userToken:token,
         loginDate:Date.now(),
-
       });
       newUser.save((err,user) => {
         if(err) {

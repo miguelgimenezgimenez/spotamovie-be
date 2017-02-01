@@ -10,7 +10,7 @@ router.get('/me', userController.me);
 router.post('/login', loginController.login);
 router.post('/movies/:movieId/like', movieController.like);
 router.post('/movies/:movieId/dislike', movieController.dislike);
-// router.post('/movies/recommendation', movieController.recommendation);
+router.get('/movies/recommendation', movieController.recommendation);
 
 
 module.exports = router;
