@@ -28,7 +28,8 @@
     "morgan": "^1.7.0",
     "raccoon": "^0.2.3",
     "redis": "^2.6.5",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "spotify-web-api-node": "^2.3.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
