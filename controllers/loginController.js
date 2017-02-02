@@ -41,11 +41,14 @@ loginController.login = (req, res, next) => {
           .then(user => {
             res.send(user);
             return songController.processData(user, req.spotifyApi._credentials.accessToken);
+          })
+          .catch(err => {
+            console.log(err);
           });
         }
       });
     });
-  })
+  }, (err) => console.log(err))
   .catch(err => {
     res.send(err);
   });
