@@ -1,6 +1,7 @@
 const request = require('request');
-const raccoonController = require('./raccoonController');
+const raccoon = require('raccoon');
 let songController = {};
+const loginController = require('./loginController');
 
 const authHeaders = (auth_token) => ({
   headers: { 'Authorization': 'Bearer ' + auth_token },
@@ -9,27 +10,26 @@ const authHeaders = (auth_token) => ({
 
 let songs = [];
 
-songController.processData = (user, access_token) => {
+songController.storePlaylists = (user, access_token,req) => {
+
   const options = authHeaders(access_token);
   options['url'] = 'https://api.spotify.com/v1/me/playlists';
-  getPlaylists(options)
-  .then((playlists) => {
-    if (playlists) {
-      return processPlaylists(playlists, options, user.spotifyId)        ;
+  req.spotifyApi.getUserPlaylists(user.spotifyId)
+  .then((data) => {
+    if (data.body.items) {
+      const playlists=data.body.items.map((playlist) => playlist.id);
+        return processPlaylists(playlists, options, user.spotifyId) ;
     }
-    else console.log('no playlists');
+    else {
+      console.log('no playlists');
+      return;
+    }
   })
   .then(songs => {
     likeSongs(songs, user.spotifyId);
-  });
-};
-
-const getPlaylists = (options) => {
-  return new Promise((resolve, reject) => {
-    request.get(options, (error, response, body) => {
-      if (error) return reject(error);
-      return resolve(body.items.map((playlist) => playlist.id));
-    });
+  })
+  .catch((err) => {
+    console.log(err, "error in songController");
   });
 };
 
@@ -37,13 +37,13 @@ const processPlaylists = (playlists, options, userId) => {
   return new Promise((resolve, reject) => {
     getSongs(playlists, options,userId)
     .then((allSongs)=>{
+      console.log(allSongs, "ALl SONGS");
       resolve(allSongs);
-    }
-  )
-  .catch(err => {
-    reject(err);
+    })
+    .catch(err => {
+      reject(err);
+    });
   });
-});
 };
 
 const getSongs = (playlists, options,userId) => {
@@ -59,16 +59,20 @@ const getSongs = (playlists, options,userId) => {
           });
         }
         count++;
-        if (count===playlists.length-1) return resolve(allSongs);
+        if (count===playlists.length) return resolve(allSongs);
+
       });
     });
   });
 };
 const getSongsByPlaylist=(playlist_id,options,userId)=>{
+  console.log(playlist_id, 'playlist_id', userId, options);
   return new Promise((resolve, reject) =>  {
     options['url'] = `https://api.spotify.com/v1/users/${userId}/playlists/${playlist_id}/tracks`;
     request.get(options, (error, response, body) => {
+      console.log(body, 'body');
       if (error) {
+        console.log('playlist not found',playlist_id);
         reject(error);
       }
       return resolve(body);
@@ -78,9 +82,18 @@ const getSongsByPlaylist=(playlist_id,options,userId)=>{
 
 const likeSongs = (songs, userId) => {
   songs.forEach(song => {
-    raccoonController.liked(userId,`SP${song}`, ()=>{
+    const songId=`SP${song}`;
+    raccoon.allLikedFor(userId,results=> {
+      for (var i = 0; i < results.length; i++) {
+        if (songId===results[i]) return;
+      }
+      raccoon.liked(userId,songId, ()=>{
+        console.log(userId,'liked',songId);
+      });
     });
+
   });
 };
+
 
 module.exports = songController;
