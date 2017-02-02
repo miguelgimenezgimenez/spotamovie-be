@@ -20,6 +20,7 @@
   "homepage": "https://github.com/miguelgimenezgimenez/spotamovie-be#readme",
   "dependencies": {
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "buffer": "^5.0.2",
     "express": "^4.14.0",

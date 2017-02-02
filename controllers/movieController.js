@@ -3,6 +3,7 @@ const userController = require('./userController');
 const UserSchema =require('../models/User');
 const raccoon = require('raccoon');
 
+
 let movieController = {};
 
 
@@ -40,9 +41,24 @@ movieController.dislike=(req,res)=>{
   });
 };
 movieController.recommendation=(req,res)=>{
-  raccoon.recommendFor(req.body.userId,1, (recs)=>{
-    console.log(recs);
-  });  
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  console.log(token);
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      let movie;
+      raccoon.recommendFor(userId, 1,(recs) => {
+        console.log(recs);
+        movie=recs[0];
+        return res.send({movie:movie});
+      });
+    }else{
+      return res.sendStatus(401);
+    }
+  });
+
 };
 
 module.exports=movieController;

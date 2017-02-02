@@ -10,7 +10,7 @@ const router = require('./router.js');
 //don't show the log when it is test
 if(process.env.NODE_ENV !== 'test') {
     //use morgan to log at command line
-    app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
+    // app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
 }
 
 app.use(bodyParser.json());
