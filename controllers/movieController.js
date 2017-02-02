@@ -82,10 +82,9 @@ movieController.recommendation=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.recommendFor(userId, 1,(recs) => {
-        console.log(recs);
-        movie=recs[0];
-        return res.send({movie:movie});
+      raccoon.recommendFor(userId, 1,rec => {
+
+        return res.send(rec);
       });
     }else{
       return res.sendStatus(401);
@@ -132,15 +131,11 @@ const findRatedMovies=(userId)=>{
   return new Promise((resolve,reject)=>{
     let userRated=[];
     const ratedMovies={};
-    raccoon.allLikedFor(userId,(results) => {
-      userRated=userRated.concat(results) ;
-      raccoon.allDislikedFor(userId,(results) => {
-        userRated=userRated.concat(results) ;
-        userRated.forEach(like =>{
-          if (!like.includes('SP'))ratedMovies[like]='rated' ;
-        });
-        return resolve(ratedMovies);
+    raccoon.allWatchedFor(userId,results => {
+      results.forEach(like =>{
+        if (!like.includes('SP'))ratedMovies[like]='rated' ;
       });
+      return resolve(ratedMovies);
     });
   });
 };
@@ -177,7 +172,7 @@ movieController.survey=(req,res)=>{
             let index=0;
 
             while (returnedMovies.length<numberOfmovies) {
-                if (!ratedMovies.hasOwnProperty(tmdbMovies.results[index].id)) {
+              if (!ratedMovies.hasOwnProperty(tmdbMovies.results[index].id)) {
 
                 returnedMovies.push(tmdbMovies.results[index].id);
               }

@@ -3,6 +3,7 @@ const request = require('request');
 const userController = require('./userController');
 const songController = require('./songController');
 const nconf = require('../config/nconf');
+const UserSchema =require('../models/User');
 
 const loginController = {};
 
@@ -30,7 +31,7 @@ loginController.login = (req, res, next) => {
       spotifyUserProfile = userInfo;
       // retrieve the user from DB
       // save it in the DB if it doesn't exist
-      userController.getUser({spotifyId:userInfo.body.id})
+      UserSchema.find({spotifyId:userInfo.body.id})
       .then((user) => {
         if (user.length > 0) {
           return userController.updateUser(user[0].spotifyId,{userToken:req.spotifyApi._credentials.accessToken})

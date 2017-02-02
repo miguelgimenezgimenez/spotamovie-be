@@ -7,7 +7,7 @@ const userController={};
 userController.me=((req,res,next)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
-  userController.getUser({userToken:token})
+  UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length===0) {
       console.log('user not FOUND in db');
@@ -20,20 +20,11 @@ userController.me=((req,res,next)=>{
   });
 });
 
-userController.getUser=(query=>{
-  return new Promise((resolve,reject)=>{
-    UserSchema.find(query)
-    .then((user,err)=>{
-      return resolve(user);
-    });
-  });
-});
-
 userController.updateUser=(id,updateKey)=>{
   return new Promise((resolve,reject)=>{
     var options = {new: true};
     const newValue=Object.assign({},updateKey,{loginDate:Date.now()});
-    
+
     UserSchema.findOneAndUpdate({spotifyId:id},
       {
         $set:newValue
