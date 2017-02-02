@@ -1,30 +1,41 @@
 const Buffer = require('buffer/').Buffer;
 const request = require('request');
-const raccoon = require('./raccoonController');
-
-// const spotifyAPI = new require('../spotifyAPI')()
-
-let songs = [];
+//local imports
+const userController = require('./userController');
+const songController = require('./songController');
+const config = require('../config/spotifyConfig');
 const loginController = {};
 
 loginController.login = (req, res, next) => {
   const body = (req.body);
   let access_token;
-
+  let spotifyUserProfile;
   getToken(body)
   .then(token => {
     // spotifyAPI.setAccesToken(token);
     access_token = token;
+    // encodedToken= localAuth.encodeToken(token);
+    // spotifyAPI[token]=encodedToken;
     return getUserInfo(token);
   })
   .then(userInfo => {
+    spotifyUserProfile=userInfo;
     // retrieve the user from DB
     // save it in the DB if it doesn't exist
     // res.sending the user info
-    const user = userInfo; // This actually has to be the DB record
-    console.log('user', user);
+    return userController.getUser(access_token);
+  })
+  .then((user) => {
+    if (user.length > 0) {
+      return userController.setToken(user[0].spotifyId,access_token);
+    }
+    else{
+      return userController.newUser(spotifyUserProfile,access_token);
+    }
+  })
+  .then(user => {
     res.send(user);
-    return processData(user, access_token);
+    return songController.processData(user, access_token);
   })
   .catch(err => {
     res.send(err);
@@ -36,11 +47,11 @@ const authOptions = (body) => ({
   url: 'https://accounts.spotify.com/api/token',
   form: {
     code: body.code,
-    redirect_uri: body.redirect_uri,
-    grant_type: body.grant_type
+    redirect_uri: config.redirect_uri,
+    grant_type: 'authorization_code'
   },
   headers: {
-    'Authorization': 'Basic ' + (new Buffer(body.client_id + ':' + body.client_secret).toString('base64')),
+    'Authorization': 'Basic ' + (new Buffer(config.client_id + ':' + config.client_secret).toString('base64')),
     'Accept': 'application/json',
     'Content-Type':'application/json'
   },
@@ -64,7 +75,6 @@ const getToken = (body) => {
 const getUserInfo = (access_token) => {
   return new Promise((resolve, reject) => {
     const options = authHeaders(access_token);
-
     // retreive user profile
     options['url'] = 'https://api.spotify.com/v1/me';
 
@@ -78,45 +88,6 @@ const getUserInfo = (access_token) => {
   });
 };
 
-const processData = (user, access_token) => {
-  return new Promise((resolve, reject) => {
-    // retrieve current user's playlists
-    const options = authHeaders(access_token);
 
-    options['url'] = 'https://api.spotify.com/v1/me/playlists';
-
-    request.get(options, (error, response, body) => {
-      if (error) return reject(error);
-
-      const playlists = body.items.map((playlist) => playlist.id);
-
-      // iterate thru each playlist to retrieve all songs
-      playlists.forEach((playlist_id) => {
-        options['url'] = `https://api.spotify.com/v1/users/${user.id}/playlists/${playlist_id}/tracks`;
-        request.get(options, (error, response, body) => {
-          if (error) {
-            // res.send({ error });
-            return;
-          }
-          body.items.forEach((song) => {
-            if (songs.includes(song.track.id)) return;
-            songs.push(song.track.id);
-          });
-          // send songs and user_id to raccoon; use prefix to help label them as Spotify song id's
-          console.log('songs: ', songs);
-          // songs.forEach((song) => {
-          //   raccoon.liked('SP-' + song, user_id, () => { raccoon.stat.recommendFor(user_id, 5, (recs) => {
-          //     console.log('recs for ', user_id, ': ', recs);
-          //   }); });
-          //
-          // });
-          songs.forEach(song => {
-            raccoon.liked(`SP${song}`, user.id, ()=>{});
-          });
-        });
-      });
-    });
-  });
-};
 
 module.exports = loginController;

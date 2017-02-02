@@ -4,7 +4,7 @@
   "description": "recommendation for movies",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 2000"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,22 @@
   },
   "homepage": "https://github.com/miguelgimenezgimenez/spotamovie-be#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.16.0",
     "buffer": "^5.0.2",
+    "config": "^1.24.0",
     "express": "^4.14.0",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.17.1",
+    "mongoose": "^4.8.0",
+    "morgan": "^1.7.0",
     "raccoon": "^0.2.3",
     "redis": "^2.6.5",
     "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }
