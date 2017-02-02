@@ -13,7 +13,7 @@ userController.me=((req,res,next)=>{
       console.log('user not FOUND in db');
       return res.sendStatus(401, 'user Not found');
     }
-    if ((Date.now()-response[0].loginDate)/60000>24) {
+    if (((Date.now()-response[0].loginDate)/60000)>24) {
       return res.sendStatus(401, 'token expired');
     }
     if (response.length>0) return res.send(response[0]);
@@ -29,15 +29,14 @@ userController.getUser=(query=>{
   });
 });
 
-userController.updateUser=(id,token)=>{
+userController.updateUser=(id,updateKey)=>{
   return new Promise((resolve,reject)=>{
     var options = {new: true};
+    const newValue=Object.assign({},updateKey,{loginDate:Date.now()});
+    
     UserSchema.findOneAndUpdate({spotifyId:id},
       {
-        $set:{
-          userToken: token,
-          loginDate:Date.now()
-        }
+        $set:newValue
       },
       options,((err,user)=>{
         return resolve(user);

@@ -13,6 +13,7 @@ router.post('/movies/:movieId/dislike', movieController.dislike);
 router.post('/movies/:movieId/unlike', movieController.like);
 router.post('/movies/:movieId/undislike', movieController.dislike);
 router.get('/movies/recommendation', movieController.recommendation);
+router.get('/movies/survey', movieController.survey);
 
 
 module.exports = router;

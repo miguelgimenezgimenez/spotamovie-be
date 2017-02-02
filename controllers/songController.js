@@ -66,7 +66,6 @@ const getSongs = (playlists, options,userId) => {
   });
 };
 const getSongsByPlaylist=(playlist_id,options,userId)=>{
-  console.log(playlist_id, 'playlist_id', userId, options);
   return new Promise((resolve, reject) =>  {
     options['url'] = `https://api.spotify.com/v1/users/${userId}/playlists/${playlist_id}/tracks`;
     request.get(options, (error, response, body) => {
