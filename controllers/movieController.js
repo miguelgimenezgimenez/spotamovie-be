@@ -23,7 +23,39 @@ movieController.like=(req,res)=>{
     return res.sendStatus(401);
   });
 };
+movieController.unlike=(req,res)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      const movieId=req.params.movieId;
+      raccoon.unliked(userId,movieId, ()=>{
+        console.log(userId,'unliked',movieId);
+      });
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(401);
+  });
+};
 
+movieController.undislike=(req,res)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      const movieId=req.params.movieId;
+      raccoon.undisliked(userId,movieId, ()=>{
+        console.log(userId,'undisliked',movieId);
+      });
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(401);
+  });
+};
 movieController.dislike=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
