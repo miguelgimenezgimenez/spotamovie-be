@@ -12,51 +12,24 @@ let songs = [];
 
 songController.storePlaylists = (user, access_token,req) => {
 
-  if (!access_token) {
-    req.spotifyApi.getMe()
-    .then(function(data) {
-      console.log('Some information about the authenticated user', data.body);
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-  }
   const options = authHeaders(access_token);
   options['url'] = 'https://api.spotify.com/v1/me/playlists';
-  getPlaylists(options,req)
-  // req.spotifyApi.getUserPlaylists(user.spotifyId)
-  .then((playlists) => {
-    if (playlists) {
-      return processPlaylists(playlists, options, user.spotifyId) ;
+  req.spotifyApi.getUserPlaylists(user.spotifyId)
+  .then((data) => {
+    if (data.body.items) {
+      const playlists=data.body.items.map((playlist) => playlist.id);
+        return processPlaylists(playlists, options, user.spotifyId) ;
     }
-    else console.log('no playlists');
+    else {
+      console.log('no playlists');
+      return;
+    }
   })
   .then(songs => {
     likeSongs(songs, user.spotifyId);
   })
   .catch((err) => {
-    console.log(err, "REFRESHING TOKEN");
-  });
-};
-
-const getPlaylists = (options,req) => {
-  return new Promise((resolve, reject) => {
-    request.get(options, (error, response, body) => {
-      if(body.error) {
-        if (body.error.status===401) {
-          req.spotifyApi.refreshAccessToken()
-          .then(res=>{
-            options = authHeaders(req.spotifyApi._credentials.accessToken);
-            options['url'] = 'https://api.spotify.com/v1/me/playlists';
-            return;
-          });
-        }
-      }
-      // console.log(options, "OPTION");
-      if (error) return reject(error);
-      if (body.items) {
-        return resolve(body.items.map((playlist) => playlist.id));
-      }
-    });
+    console.log(err, "error in songController");
   });
 };
 
@@ -64,13 +37,13 @@ const processPlaylists = (playlists, options, userId) => {
   return new Promise((resolve, reject) => {
     getSongs(playlists, options,userId)
     .then((allSongs)=>{
+      console.log(allSongs, "ALl SONGS");
       resolve(allSongs);
-    }
-  )
-  .catch(err => {
-    reject(err);
+    })
+    .catch(err => {
+      reject(err);
+    });
   });
-});
 };
 
 const getSongs = (playlists, options,userId) => {
@@ -86,23 +59,26 @@ const getSongs = (playlists, options,userId) => {
           });
         }
         count++;
-        if (count===playlists.length-1) return resolve(allSongs);
+        if (count===playlists.length) return resolve(allSongs);
+
       });
     });
   });
 };
 const getSongsByPlaylist=(playlist_id,options,userId)=>{
+  console.log(playlist_id, 'playlist_id', userId, options);
   return new Promise((resolve, reject) =>  {
     options['url'] = `https://api.spotify.com/v1/users/${userId}/playlists/${playlist_id}/tracks`;
     request.get(options, (error, response, body) => {
+      console.log(body, 'body');
       if (error) {
+        console.log('playlist not found',playlist_id);
         reject(error);
       }
       return resolve(body);
     });
   });
 };
-
 
 const likeSongs = (songs, userId) => {
   songs.forEach(song => {

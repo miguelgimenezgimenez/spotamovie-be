@@ -9,14 +9,13 @@ userController.me=((req,res,next)=>{
   const token =req.headers.authorization.split(' ')[1];
   userController.getUser({userToken:token})
   .then(response=>{
-    console.log(response);
     if (response.length===0) {
-        console.log('user not FOUND in db');
+      console.log('user not FOUND in db');
       return res.sendStatus(401, 'user Not found');
     }
-    // if ((Date.now()-response[0].loginDate)/60000>24) {
-    songController.storePlaylists(response[0],false,req);
-    // }
+    if ((Date.now()-response[0].loginDate)/60000>24) {
+      return res.sendStatus(401, 'token expired');
+    }
     if (response.length>0) return res.send(response[0]);
   });
 });
@@ -33,7 +32,7 @@ userController.getUser=(query=>{
 userController.updateUser=(id,token)=>{
   return new Promise((resolve,reject)=>{
     var options = {new: true};
-    UserSchema.findOneAndUpdate({userToken:token},
+    UserSchema.findOneAndUpdate({spotifyId:id},
       {
         $set:{
           userToken: token,
@@ -58,6 +57,7 @@ userController.updateUser=(id,token)=>{
       newUser.save((err,user) => {
         if(err) {
           console.log(err);
+          reject(err);
         }
         else {
           //If no errors, send it back to the client

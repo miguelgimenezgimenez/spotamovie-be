@@ -33,7 +33,11 @@ loginController.login = (req, res, next) => {
       userController.getUser({spotifyId:userInfo.body.id})
       .then((user) => {
         if (user.length > 0) {
-          return userController.updateUser(user[0].spotifyId,req.spotifyApi.accessToken);
+          return userController.updateUser(user[0].spotifyId,req.spotifyApi._credentials.accessToken)
+          .then(user=>{
+            res.send(user);
+            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken,req);
+          });
         }
         else {
           return userController.newUser(spotifyUserProfile,req.spotifyApi._credentials.accessToken)

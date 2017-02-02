@@ -42,7 +42,7 @@ movieController.dislike=(req,res)=>{
 movieController.recommendation=(req,res)=>{
   raccoon.recommendFor(req.body.userId,1, (recs)=>{
     console.log(recs);
-  });
+  });  
 };
 
 module.exports=movieController;
