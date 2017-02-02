@@ -3,83 +3,73 @@ const mongoose = require('mongoose');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const PassThrough = require('stream').PassThrough;
 const server = require('../index');
 let should = chai.should();
 const nconf = require('../config/nconf.js');
+const spotifyWebApi = require('spotify-web-api-node');
+
+const loginController = require('../controllers/loginController');
+const sinonStub = require('./stub');
 
 chai.use(chaiHttp);
+chai.use(sinonChai);
 
 describe('Movies', () => {
+  let request, response;
+  beforeEach(() => {
+    request = {
+      body: {
+        code: '83838383k3i'
+      },
+      spotifyApi: new spotifyWebApi({
+        clientId : 'SPOTIFY_CLIENT_ID',
+        clientSecret : 'SPOTIFY_CLIENT_SECRET',
+        redirectUri : 'SPOTIFY_REDIRECT_URI'
+      })
+    };
 
-  // Test Login
-  describe('/login POST user', () => {
-     it('it should allow user to login using Spotify credentials', (done) => {
-       chai.request(server)
-        .post('/login')
-        .field('code', nconf.get('SPOTIFY_CLIENT_ID'))
-        .field('redirect_uri', nconf.get('SPOTIFY_REDIRECT_URI'))
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('userToken');
-        done();
+    const stubAuth = sinonStub(request.spotifyApi, 'authorizationCodeGrant',
+      {
+        statusCode: 200,
+        body: { access_token: 'token' }
       });
-    });
+
+    const stubGetMe = sinonStub(request.spotifyApi, 'getMe',
+      {
+        body: {
+          country: 'ES',
+          display_name: 'Ro Rey',
+          email: 'someone@gmail.com',
+          external_urls: { spotify: 'https://open.spotify.com/user/djdjdjdj' },
+          followers: { href: null, total: 0 },
+          href: 'https://api.spotify.com/v1/users/djdjdjdj',
+          id: 'ou2o3iu453245',
+          images: [ [Object] ],
+          product: 'open',
+          type: 'user',
+          uri: 'spotify:user:djdjdjdj'
+        }
+      });
+
+    const stubGetUserPlaylists = sinonStub(request.spotifyApi, 'getUserPlaylists', { body: { items: [{id: 3838383}, {id: 393939}] }});
+
+    const stubGetPlaylistTracks = sinonStub(request.spotifyApi, 'getPlaylistTracks', { body: { items: [{track: {id: 2423}}, {track: {id: 7474}}, {track: {id: 92929}}, {track: {id: 94949}}]}});
+
+    response = {
+      send: (obj) => { this.body = obj; }
+    };
   });
 
-  describe('/movies/{movie_id}/like POST like', () => {
-     it('it should allow posting an item liked by a particular user', (done) => {
-       const movie_id = 'TESTxxxxxxxx';
-       chai.request(server)
-        .post(`/movies/${movie_id}/like`)
-        .set('Authorization', 'Bearer')
-        .end((err, res) => {
-          res.should.have.status(201);
-        done();
-      });
-    });
-  });
+  it('loginController', (done) => {
+    response.send = (obj) => {
+      console.log('this is obj', obj);
+      done();
+    };
 
-  describe('/movies/{movie_id}/dislike POST dislike', (movie_id) => {
-     it('it should allow posting an item disliked by a particular user', (done) => {
-       const movie_id = 'TESTyyyyyyyy';
-       chai.request(server)
-        .post(`/movies/${movie_id}/dislike`)
-        .set('Authorization', 'Bearer')
-        .end((err, res) => {
-          res.should.have.status(201);
-        done();
-      });
-    });
-  });
+    loginController.login(request, response);
 
-  describe('/movies/recommendation GET recommendation', () => {
-     it('it should return a movie recommendation for a particular user', (done) => {
-       chai.request(server)
-        .get('/movies/recommendation')
-        .set('Authorization', 'Bearer')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('movie_id');
-        done();
-      });
-    });
   });
-
-  describe('/movies/survey GET survey', () => {
-     it('it should return a list of movies for a user survey', (done) => {
-       chai.request(server)
-        .get('/movies/survey')
-        .set('Authorization', 'Bearer')
-        .end((err, res) => {
-          const result = res.text;
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('movies');
-        done();
-      });
-    });
-  });
-
 });
