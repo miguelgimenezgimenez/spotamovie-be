@@ -9,6 +9,7 @@ module.exports = {
       "__dirname": true,
       "describe": true,
       "beforeEach": true,
+      "afterEach": true,
       "it": true
     },
     "extends": "eslint:recommended",
