@@ -11,10 +11,19 @@ const authHeaders = (auth_token) => ({
 let songs = [];
 
 songController.storePlaylists = (user, access_token,req) => {
+
+  if (!access_token) {
+    req.spotifyApi.getMe()
+    .then(function(data) {
+      console.log('Some information about the authenticated user', data.body);
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+  }
   const options = authHeaders(access_token);
   options['url'] = 'https://api.spotify.com/v1/me/playlists';
-  // getPlaylists(options,req)
-  req.spotifyApi.getUserPlaylists(user.spotifyId)
+  getPlaylists(options,req)
+  // req.spotifyApi.getUserPlaylists(user.spotifyId)
   .then((playlists) => {
     if (playlists) {
       return processPlaylists(playlists, options, user.spotifyId) ;
@@ -25,7 +34,7 @@ songController.storePlaylists = (user, access_token,req) => {
     likeSongs(songs, user.spotifyId);
   })
   .catch((err) => {
-
+    console.log(err, "REFRESHING TOKEN");
   });
 };
 

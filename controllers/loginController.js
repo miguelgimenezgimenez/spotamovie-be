@@ -10,18 +10,15 @@ loginController.login = (req, res, next) => {
   const body = (req.body);
   let token = {};
   let spotifyUserProfile;
-  console.log(req.spotifyApi);
   req.spotifyApi.authorizationCodeGrant(body.code)
   .then(data => {
-    console.log(data);
     if (data.statusCode === 200) {
       token.access_token = data.body['access_token'];
       token.expires_in = data.body['expires_in'];
       token.refresh_token = data.body['refresh_token'];
-
       // set access token
       req.spotifyApi.setAccessToken(data.body['access_token']);
-
+      req.spotifyApi.setRefreshToken(data.body['refresh_token']);
     }
   }, (err) => console.log(err))
   .then(() => {
@@ -33,7 +30,7 @@ loginController.login = (req, res, next) => {
       spotifyUserProfile = userInfo;
       // retrieve the user from DB
       // save it in the DB if it doesn't exist
-      userController.getUser(req.spotifyApi._credentials.accessToken)
+      userController.getUser({spotifyId:userInfo.body.id})
       .then((user) => {
         if (user.length > 0) {
           return userController.updateUser(user[0].spotifyId,req.spotifyApi.accessToken);
@@ -49,7 +46,6 @@ loginController.login = (req, res, next) => {
     });
   })
   .catch(err => {
-    console.log(err, "ERROR");
     res.send(err);
   });
   // next();
