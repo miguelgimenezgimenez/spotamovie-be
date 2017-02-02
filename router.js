@@ -14,6 +14,8 @@ router.post('/movies/:movieId/unlike', movieController.like);
 router.post('/movies/:movieId/undislike', movieController.dislike);
 router.get('/movies/recommendation', movieController.recommendation);
 router.get('/movies/survey', movieController.survey);
+router.get('/movies/allLikes', movieController.allLikes);
+router.get('/movies/alldislikes', movieController.alldislikes);
 
 
 module.exports = router;

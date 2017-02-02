@@ -72,6 +72,8 @@ movieController.dislike=(req,res)=>{
     return res.sendStatus(401);
   });
 };
+
+
 movieController.recommendation=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
@@ -91,35 +93,64 @@ movieController.recommendation=(req,res)=>{
   });
 };
 movieController.allLikes=(req,res)=>{
-
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      console.log(userId, 'id');
+      let movie;
+      raccoon.allLikedFor(userId,(results) => {
+        console.log(results);
+        return res.send(results);
+      });
+    }else{
+      return res.sendStatus(401);
+    }
+  });
 };
 movieController.alldislikes=(req,res)=>{
-
-
-
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      let movie;
+      raccoon.allLikedFor(userId,(results) => {
+        return res.send(results);
+      });
+    }else{
+      return res.sendStatus(401);
+    }
+  });
 };
 
 
 const findRatedMovies=(userId)=>{
-  const userRated=[];
-  const ratedMovies={};
-  raccoon.allLikedFor(userId,(results) => {
-    userRated.push(results) ;
+  return new Promise((resolve,reject)=>{
+    let userRated=[];
+    const ratedMovies={};
+    raccoon.allLikedFor(userId,(results) => {
+      userRated=userRated.concat(results) ;
+      raccoon.allDislikedFor(userId,(results) => {
+        userRated=userRated.concat(results) ;
+        userRated.forEach(like =>{
+          if (!like.includes('SP'))ratedMovies[like]='rated' ;
+        });
+        return resolve(ratedMovies);
+      });
+    });
   });
-  raccoon.allDislikedFor(userId,(results) => {
-    userRated.push(results);
-  });
-  userRated.forEach(like =>{
-    if (!like.includes('SP'))ratedMovies[like]='rated' ;
-  });
-  return ratedMovies;
 };
+
 
 
 movieController.survey=(req,res)=>{
 
   let url =`https://api.themoviedb.org/3/discover/movie?api_key=${config.TMDB_API_KEY}`;
-  let numberOfmovies=10;
+  let numberOfmovies;
   const returnedMovies=[];
   let ratedMovies={};
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
@@ -131,23 +162,30 @@ movieController.survey=(req,res)=>{
       const userId=user[0].spotifyId;
       userController.updateUser(userId,{firstLogin:false})
       .then(user=>{
+
         const page=Math.floor(Math.random()*999);
         url+=`&page=${page}`;
         request.get(url, (error, response, body) => {
+
           const tmdbMovies=JSON.parse(body);
-          console.log(tmdbMovies.results[0].id);
-          if (!user.firstLogin) {
-            numberOfmovies=3;
-            ratedMovies=findRatedMovies(userId);
-          }
-          let index=0;
-          while (returnedMovies.length<numberOfmovies) {
-            if (!ratedMovies.hasOwnProperty(tmdbMovies.results[index].id)) {
-              returnedMovies.push(tmdbMovies.results[index].id);
+
+          user.firstLogin?numberOfmovies=10: numberOfmovies=3;
+
+          findRatedMovies(userId)
+          .then(response=>{
+            ratedMovies=response;
+            let index=0;
+
+            while (returnedMovies.length<numberOfmovies) {
+                if (!ratedMovies.hasOwnProperty(tmdbMovies.results[index].id)) {
+
+                returnedMovies.push(tmdbMovies.results[index].id);
+              }
+              index++;
+              if (index===tmdbMovies.results.length-1) return movieController.survey(req,res);
             }
-            index++;
-          }
-          res.send(returnedMovies);
+            return res.send(returnedMovies);
+          });
         });
       });
 
