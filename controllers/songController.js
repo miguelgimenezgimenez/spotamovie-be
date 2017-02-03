@@ -3,22 +3,14 @@ const raccoon = require('raccoon');
 let songController = {};
 const loginController = require('./loginController');
 
-const authHeaders = (auth_token) => ({
-  headers: { 'Authorization': 'Bearer ' + auth_token },
-  json: true,
-});
-
 let songs = [];
 
-songController.storePlaylists = (user, access_token,req) => {
-
-  const options = authHeaders(access_token);
-  options['url'] = 'https://api.spotify.com/v1/me/playlists';
+songController.storePlaylists = (user, access_token, req) => {
   req.spotifyApi.getUserPlaylists(user.spotifyId)
   .then((data) => {
     if (data.body.items) {
       const playlists=data.body.items.map((playlist) => playlist.id);
-        return processPlaylists(playlists, options, user.spotifyId) ;
+        return processPlaylists(playlists, user.spotifyId, req) ;
     }
     else {
       console.log('no playlists');
@@ -26,18 +18,18 @@ songController.storePlaylists = (user, access_token,req) => {
     }
   })
   .then(songs => {
-    likeSongs(songs, user.spotifyId);
+    songController.likeSongs(songs, user.spotifyId);
+    return songs;
   })
   .catch((err) => {
     console.log(err, "error in songController");
   });
 };
 
-const processPlaylists = (playlists, options, userId) => {
+const processPlaylists = (playlists, userId, req) => {
   return new Promise((resolve, reject) => {
-    getSongs(playlists, options,userId)
+    getSongs(playlists, userId, req)
     .then((allSongs)=>{
-      console.log(allSongs, "ALl SONGS");
       resolve(allSongs);
     })
     .catch(err => {
@@ -46,12 +38,12 @@ const processPlaylists = (playlists, options, userId) => {
   });
 };
 
-const getSongs = (playlists, options,userId) => {
+const getSongs = (playlists, userId, req) => {
   const allSongs=[];
   let count=0;
   return new Promise((resolve, reject) => {
     playlists.forEach((playlist_id) => {
-      getSongsByPlaylist(playlist_id,options,userId)
+      getSongsByPlaylist(playlist_id, userId, req)
       .then(songsInPlaylist=>{
         if (songsInPlaylist.items) {
           songsInPlaylist.items.forEach(item=>{
@@ -65,34 +57,33 @@ const getSongs = (playlists, options,userId) => {
     });
   });
 };
-const getSongsByPlaylist=(playlist_id,options,userId)=>{
-  console.log(playlist_id, 'playlist_id', userId, options);
+const getSongsByPlaylist=(playlist_id, userId, req)=>{
   return new Promise((resolve, reject) =>  {
-    options['url'] = `https://api.spotify.com/v1/users/${userId}/playlists/${playlist_id}/tracks`;
-    request.get(options, (error, response, body) => {
-      console.log(body, 'body');
-      if (error) {
-        console.log('playlist not found',playlist_id);
-        reject(error);
-      }
-      return resolve(body);
+    req.spotifyApi.getPlaylistTracks(userId, playlist_id)
+    .then((data) => {
+      resolve(data.body);
+    })
+    .catch((err) => {
+      console.log(err, "error retrieving playlist songs");
     });
   });
 };
 
-const likeSongs = (songs, userId) => {
-  songs.forEach(song => {
-    const songId=`SP${song}`;
-    raccoon.allLikedFor(userId,results=> {
-      for (var i = 0; i < results.length; i++) {
-        if (songId===results[i]) return;
-      }
-      raccoon.liked(userId,songId, ()=>{
-        console.log(userId,'liked',songId);
+songController.likeSongs = (songs, userId) => {
+  try {
+    songs.forEach(song => {
+      const songId=`SP${song}`;
+      raccoon.allLikedFor(userId,results=> {
+        for (var i = 0; i < results.length; i++) {
+          if (songId===results[i]) return;
+        }
+        raccoon.liked(userId,songId, ()=>{
+        });
       });
     });
-
-  });
+  } catch (err) {
+    console.log('error in likeSongs', err);
+  }
 };
 
 

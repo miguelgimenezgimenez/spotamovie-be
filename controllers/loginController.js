@@ -30,10 +30,10 @@ loginController.login = (req, res, next) => {
       spotifyUserProfile = userInfo;
       // retrieve the user from DB
       // save it in the DB if it doesn't exist
-      userController.getUser({spotifyId:userInfo.body.id})
+      return userController.getUser({spotifyId:userInfo.body.id})
       .then((user) => {
         if (user.length > 0) {
-          return userController.updateUser(user[0].spotifyId,req.spotifyApi._credentials.accessToken)
+          return userController.updateUser(user[0].spotifyId,{ userToken: req.spotifyApi._credentials.accessToken })
           .then(user=>{
             res.send(user);
             return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken,req);
@@ -43,7 +43,7 @@ loginController.login = (req, res, next) => {
           return userController.newUser(spotifyUserProfile,req.spotifyApi._credentials.accessToken)
           .then(user => {
             res.send(user);
-            return songController.processData(user, req.spotifyApi._credentials.accessToken);
+            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken);
           })
           .catch(err => {
             console.log(err);
@@ -55,7 +55,6 @@ loginController.login = (req, res, next) => {
   .catch(err => {
     res.send(err);
   });
-  // next();
 };
 
 module.exports = loginController;
