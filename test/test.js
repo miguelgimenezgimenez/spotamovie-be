@@ -12,12 +12,14 @@ const nconf = require('../config/nconf.js');
 const spotifyWebApi = require('spotify-web-api-node');
 
 const loginController = require('../controllers/loginController');
-const sinonStub = require('./stub');
+const Stub = require('./stub');
 
 chai.use(chaiHttp);
 chai.use(sinonChai);
 
-describe('Login', () => {
+let stubAuth, stubGetMe, stubGetUserPlaylists, stubGetPlaylistTracks;
+
+describe('Login:', () => {
   let request, response;
   beforeEach(() => {
     request = {
@@ -28,13 +30,13 @@ describe('Login', () => {
       })
     };
 
-    const stubAuth = sinonStub(request.spotifyApi, 'authorizationCodeGrant',
+    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
       {
         statusCode: 200,
         body: { access_token: 'token' }
       });
 
-    const stubGetMe = sinonStub(request.spotifyApi, 'getMe',
+    stubGetMe = Stub.createStub(request.spotifyApi, 'getMe',
       {
         body: {
           country: 'ES',
@@ -51,9 +53,18 @@ describe('Login', () => {
         }
       });
 
-    const stubGetUserPlaylists = sinonStub(request.spotifyApi, 'getUserPlaylists', { body: { items: [{id: 3838383}, {id: 393939}] }});
+    stubGetUserPlaylists = Stub.createStub(request.spotifyApi, 'getUserPlaylists', { body: { items: [{id: 3838383}, {id: 393939}] }});
 
-    const stubGetPlaylistTracks = sinonStub(request.spotifyApi, 'getPlaylistTracks', { body: { items: [{track: {id: 2423}}, {track: {id: 7474}}, {track: {id: 92929}}, {track: {id: 94949}}]}});
+    stubGetPlaylistTracks = Stub.createStub(request.spotifyApi, 'getPlaylistTracks', { body: { items: [{track: {id: 2423}}, {track: {id: 7474}}, {track: {id: 92929}}, {track: {id: 94949}}]}});
+
+    response = {};
+  });
+
+  afterEach(() => {
+    Stub.removeStub(stubAuth);
+    Stub.removeStub(stubGetMe);
+    Stub.removeStub(stubGetUserPlaylists);
+    Stub.removeStub(stubGetPlaylistTracks);
 
     response = {};
   });
