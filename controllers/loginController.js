@@ -10,7 +10,7 @@ loginController.login = (req, res, next) => {
   const body = (req.body);
   let token = {};
   let spotifyUserProfile;
-  if (!body.code) return res.sendStatus(400);
+  if (!body.code || !req.spotifyApi._credentials.clientId) return res.sendStatus(400);
   req.spotifyApi.authorizationCodeGrant(body.code)
   .then(data => {
     if (data.statusCode === 200) {
