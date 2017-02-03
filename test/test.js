@@ -17,13 +17,10 @@ const sinonStub = require('./stub');
 chai.use(chaiHttp);
 chai.use(sinonChai);
 
-describe('Movies', () => {
+describe('Login', () => {
   let request, response;
   beforeEach(() => {
     request = {
-      body: {
-        code: '83838383k3i'
-      },
       spotifyApi: new spotifyWebApi({
         clientId : 'SPOTIFY_CLIENT_ID',
         clientSecret : 'SPOTIFY_CLIENT_SECRET',
@@ -58,18 +55,45 @@ describe('Movies', () => {
 
     const stubGetPlaylistTracks = sinonStub(request.spotifyApi, 'getPlaylistTracks', { body: { items: [{track: {id: 2423}}, {track: {id: 7474}}, {track: {id: 92929}}, {track: {id: 94949}}]}});
 
-    response = {
-      send: (obj) => { this.body = obj; }
-    };
+    response = {};
   });
 
-  it('loginController', (done) => {
+  it('login should succeed given proper user credentials', (done) => {
+    request.body = {
+      code: '83838383k3i'
+    };
+
     response.send = (obj) => {
-      console.log('this is obj', obj);
-      done();
+      try {
+        response.status.should.be.eq(200);
+        obj.should.be.a('object');
+        obj.should.have.property('userToken');
+        obj.should.have.property('name');
+        done();
+      } catch (err) {
+        done(err);
+      }
+
     };
 
     loginController.login(request, response);
 
   });
+
+  it('login should fail without an authorization code', (done) => {
+    request.body = {};
+
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(400);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    loginController.login(request, response);
+
+  });
+
 });

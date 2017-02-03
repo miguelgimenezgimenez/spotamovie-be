@@ -10,6 +10,7 @@ loginController.login = (req, res, next) => {
   const body = (req.body);
   let token = {};
   let spotifyUserProfile;
+  if (!body.code) return res.sendStatus(400);
   req.spotifyApi.authorizationCodeGrant(body.code)
   .then(data => {
     if (data.statusCode === 200) {
@@ -35,6 +36,7 @@ loginController.login = (req, res, next) => {
         if (user.length > 0) {
           return userController.updateUser(user[0].spotifyId,{ userToken: req.spotifyApi._credentials.accessToken })
           .then(user=>{
+            res.status = 200;
             res.send(user);
             return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken,req);
           });
@@ -42,6 +44,7 @@ loginController.login = (req, res, next) => {
         else {
           return userController.newUser(spotifyUserProfile,req.spotifyApi._credentials.accessToken)
           .then(user => {
+            res.status = 200;
             res.send(user);
             return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken);
           })
@@ -53,6 +56,7 @@ loginController.login = (req, res, next) => {
     });
   }, (err) => console.log(err))
   .catch(err => {
+    res.status = 400;
     res.send(err);
   });
 };
