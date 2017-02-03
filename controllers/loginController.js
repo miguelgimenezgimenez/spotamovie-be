@@ -42,7 +42,7 @@ loginController.login = (req, res, next) => {
           .then(user=>{
             res.status = 200;
             res.send(user);
-            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken,req);
+            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken, req);
           });
         }
         else {
@@ -50,7 +50,7 @@ loginController.login = (req, res, next) => {
           .then(user => {
             res.status = 200;
             res.send(user);
-            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken);
+            return songController.storePlaylists(user, req.spotifyApi._credentials.accessToken, req);
           })
           .catch(err => {
             console.log(err);
