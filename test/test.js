@@ -107,4 +107,37 @@ describe('Login:', () => {
 
   });
 
+  it('login should fail without proper Spotify API credentials', (done) => {
+    request = {
+      body: {
+        code: '83838383k3i'
+      },
+      spotifyApi: new spotifyWebApi({
+        clientId : null,
+        clientSecret : null,
+        redirectUri : 'SPOTIFY_REDIRECT_URI'
+      })
+    };
+
+    stubAuth.restore();
+
+    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
+      {
+        statusCode: 400,
+        body: {}
+      });
+
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(400);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    loginController.login(request, response);
+
+  });
+
 });
