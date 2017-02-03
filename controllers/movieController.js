@@ -3,7 +3,7 @@ const userController = require('./userController');
 const UserSchema =require('../models/User');
 // const raccoon = require('raccoon');
 const nconf = require('../config/nconf.js');
-const raccoon = require('./config/raccoon.js');
+const raccoon = require('../config/raccoon.js');
 const _ = require('underscore');
 
 let movieController = {};
