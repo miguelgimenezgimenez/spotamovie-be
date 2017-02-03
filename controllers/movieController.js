@@ -2,7 +2,7 @@ const request = require('request');
 const userController = require('./userController');
 const UserSchema =require('../models/User');
 const raccoon = require('raccoon');
-const config = require('../config/dev.json');
+const nconf = require('../config/nconf.js');
 const _ = require('underscore');
 
 let movieController = {};
@@ -145,7 +145,7 @@ const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
 
 movieController.survey=(req,res)=>{
 
-  let url =`https://api.themoviedb.org/3/discover/movie?api_key=${config.TMDB_API_KEY}`;
+  let url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
   let numberOfmovies=1;
   let moviesToBeSent=[];
   let ratedMovies=[];
