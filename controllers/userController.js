@@ -10,7 +10,6 @@ userController.me=((req,res,next)=>{
   UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length===0) {
-      console.log('user not FOUND in db');
       return res.sendStatus(401, 'user Not found');
     }
     if (((Date.now()-response[0].loginDate)/60000)>24) {

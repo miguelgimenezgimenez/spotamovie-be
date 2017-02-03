@@ -24,6 +24,7 @@ movieController.like=(req,res)=>{
     return res.sendStatus(401);
   });
 };
+
 movieController.unlike=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
@@ -138,7 +139,6 @@ const findRatedMovies=(userId)=>{
 
 const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
   moviesToBeSent=_.difference(moviesToBeSent,moviesAllreadyRecommended);
-
   return moviesToBeSent.slice(0,n);
 };
 

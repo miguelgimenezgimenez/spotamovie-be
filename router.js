@@ -17,5 +17,4 @@ router.get('/movies/survey', movieController.survey);
 router.get('/movies/allLikes', movieController.allLikes);
 router.get('/movies/alldislikes', movieController.alldislikes);
 
-
 module.exports = router;
