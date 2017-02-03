@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const nconf = require('./config/nconf');
 const raccoon = require('raccoon');
-raccoon.connect(6379, '127.0.0.1');
+raccoon.connect(6379, nconf.get('REDIS_URL'));
 
 let options = {
                 server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
                 replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } }
               };
 
-mongoose.connect(nconf.get('DBHost'));
+mongoose.connect(nconf.get('MONGODB_URI'));
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
