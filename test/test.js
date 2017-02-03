@@ -119,6 +119,24 @@ describe('Login:', () => {
       })
     };
 
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(400);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    loginController.login(request, response);
+
+  });
+
+  it('login should fail if authorization fails', (done) => {
+    request.body = {
+      code: '83838383k3i'
+    };
+
     stubAuth.restore();
 
     stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
@@ -127,13 +145,15 @@ describe('Login:', () => {
         body: {}
       });
 
-    response.sendStatus = (status) => {
+    response.send = (obj) => {
       try {
-        status.should.be.eq(400);
+        response.status.should.be.eq(400);
+        obj.statusCode.should.be.eq(response.status);
         done();
       } catch (err) {
         done(err);
       }
+
     };
 
     loginController.login(request, response);
