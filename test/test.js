@@ -121,7 +121,7 @@ describe('Login:', () => {
 
     response.sendStatus = (status) => {
       try {
-        status.should.be.eq(400);
+        status.should.be.eq(500);
         done();
       } catch (err) {
         done(err);
@@ -137,18 +137,23 @@ describe('Login:', () => {
       code: '83838383k3i'
     };
 
+    const spotifyMockError = {
+      "error": "invalid_grant",
+      "error_description": "Invalid authorization code"
+    };
+
     stubAuth.restore();
 
     stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
       {
         statusCode: 400,
-        body: {}
+        body: spotifyMockError
       });
 
     response.send = (obj) => {
       try {
         response.status.should.be.eq(400);
-        obj.statusCode.should.be.eq(response.status);
+        obj.should.be.eq(spotifyMockError);
         done();
       } catch (err) {
         done(err);
