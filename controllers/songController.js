@@ -1,5 +1,5 @@
 const request = require('request');
-const raccoonController = require('./raccoonController');
+const raccoon = require('raccoon');
 let songController = {};
 
 const authHeaders = (auth_token) => ({
@@ -28,7 +28,9 @@ const getPlaylists = (options) => {
   return new Promise((resolve, reject) => {
     request.get(options, (error, response, body) => {
       if (error) return reject(error);
-      return resolve(body.items.map((playlist) => playlist.id));
+      if (body.items) {
+        return resolve(body.items.map((playlist) => playlist.id));
+      }
     });
   });
 };
@@ -76,11 +78,21 @@ const getSongsByPlaylist=(playlist_id,options,userId)=>{
   });
 };
 
+
 const likeSongs = (songs, userId) => {
   songs.forEach(song => {
-    raccoonController.liked(userId,`SP${song}`, ()=>{
+    const songId=`SP${song}`;
+    raccoon.allLikedFor(userId,results=> {
+      for (var i = 0; i < results.length; i++) {
+        if (songId===results[i]) return;
+      }
+      raccoon.liked(userId,songId, ()=>{
+        console.log(userId,'liked',songId);
+      });
     });
+
   });
 };
+
 
 module.exports = songController;

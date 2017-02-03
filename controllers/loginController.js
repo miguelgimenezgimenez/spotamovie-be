@@ -12,10 +12,7 @@ loginController.login = (req, res, next) => {
   let spotifyUserProfile;
   getToken(body)
   .then(token => {
-    // spotifyAPI.setAccesToken(token);
     access_token = token;
-    // encodedToken= localAuth.encodeToken(token);
-    // spotifyAPI[token]=encodedToken;
     return getUserInfo(token);
   })
   .then(userInfo => {
@@ -27,7 +24,7 @@ loginController.login = (req, res, next) => {
   })
   .then((user) => {
     if (user.length > 0) {
-      return userController.setToken(user[0].spotifyId,access_token);
+      return userController.updateUser(user[0].spotifyId,access_token);
     }
     else{
       return userController.newUser(spotifyUserProfile,access_token);
