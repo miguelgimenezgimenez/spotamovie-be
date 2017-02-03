@@ -4,6 +4,14 @@ module.exports = {
         "commonjs": true,
         "es6": true
     },
+    "globals": {
+      "process": true,
+      "__dirname": true,
+      "describe": true,
+      "beforeEach": true,
+      "afterEach": true,
+      "it": true
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module"
@@ -18,7 +26,7 @@ module.exports = {
             "unix"
         ],
         "quotes": [
-            "error",
+            "off",
             "single"
         ],
         "semi": [
