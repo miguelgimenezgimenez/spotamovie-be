@@ -28,8 +28,8 @@
     "morgan": "^1.7.0",
     "nconf": "^0.8.4",
     "path": "^0.12.7",
-    "raccoon": "^0.2.3",
-    "redis": "^2.6.5",
+    "raccoon": "0.2.3",
+    "redis": "2.6.5",
     "request": "^2.79.0",
     "spotify-web-api-node": "^2.3.6",
     "underscore": "^1.8.3"
