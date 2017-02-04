@@ -19,7 +19,24 @@ movieController.like=(req,res)=>{
       raccoon.liked(userId,movieId, ()=>{
         console.log(userId,'liked',movieId);
       });
-      return res.sendStatus(200);
+      return res.sendStatus(201);
+    }
+    return res.sendStatus(401);
+  });
+};
+
+movieController.dislike=(req,res)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      const movieId=req.params.movieId;
+      raccoon.disliked(userId,movieId, ()=>{
+        console.log(userId,'disliked',movieId);
+      });
+      return res.sendStatus(201);
     }
     return res.sendStatus(401);
   });
@@ -36,7 +53,7 @@ movieController.unlike=(req,res)=>{
       raccoon.unliked(userId,movieId, ()=>{
         console.log(userId,'unliked',movieId);
       });
-      return res.sendStatus(200);
+      return res.send(movieId);
     }
     return res.sendStatus(401);
   });
@@ -53,27 +70,12 @@ movieController.undislike=(req,res)=>{
       raccoon.undisliked(userId,movieId, ()=>{
         console.log(userId,'undisliked',movieId);
       });
-      return res.sendStatus(200);
+      return res.sendStatus(201);
     }
     return res.sendStatus(401);
   });
 };
-movieController.dislike=(req,res)=>{
-  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
-  const token =req.headers.authorization.split(' ')[1];
-  UserSchema.find({userToken:token})
-  .then(response=>{
-    if (response.length>0) {
-      const userId=response[0].spotifyId;
-      const movieId=req.params.movieId;
-      raccoon.disliked(userId,movieId, ()=>{
-        console.log(userId,'disliked',movieId);
-      });
-      return res.sendStatus(200);
-    }
-    return res.sendStatus(401);
-  });
-};
+
 
 
 movieController.allLikes=(req,res)=>{
@@ -117,9 +119,14 @@ movieController.recommendation=(req,res)=>{
   .then(response=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
+      const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
       raccoon.recommendFor(userId, 10,rec => {
-        return res.send(rec);
+        alreadyRecommended.push(rec[0]);
+        userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+        return res.send({
+            "movieId": rec[0],
+        });
       });
     }else{
       return res.sendStatus(401);
@@ -144,7 +151,6 @@ const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
 
 
 movieController.survey=(req,res)=>{
-
   let url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
   let numberOfmovies=1;
   let moviesToBeSent=[];
@@ -167,7 +173,6 @@ movieController.survey=(req,res)=>{
       let page =Math.floor(Math.random()*10+1);
       request.get(`${url}&page=${page}`, (error, response, body) => {
         let receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
-
         findRatedMovies(userId)
         .then(response=>{
           ratedMovies=response;
@@ -182,7 +187,7 @@ movieController.survey=(req,res)=>{
             request.get(`${url}&sort_by=popularity.asc&page=${page+10}`, (error, response, body) => {
               receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
               moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
-              return res.send(moviesToBeSent);
+              return res.send({movies:moviesToBeSent});
             });
           });
         });

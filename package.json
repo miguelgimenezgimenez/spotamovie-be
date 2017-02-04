@@ -13,7 +13,7 @@
     "url": "git+https://github.com/miguelgimenezgimenez/spotamovie-be.git"
   },
   "author": "Miguel Gimenez <gimenezgimenezmiguel@gmail.com>",
-  "license": "ISC",
+    "license": "ISC",
   "bugs": {
     "url": "https://github.com/miguelgimenezgimenez/spotamovie-be/issues"
   },

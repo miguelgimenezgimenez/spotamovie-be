@@ -52,7 +52,9 @@ const getSongs = (playlists, userId, req) => {
         }
         count++;
         if (count===playlists.length) return resolve(allSongs);
-
+      })
+      .catch(err=>{
+        console.log(err, 'err in getsongs');
       });
     });
   });
@@ -65,7 +67,7 @@ const getSongsByPlaylist=(playlist_id, userId, req)=>{
       resolve(data.body);
     })
     .catch((err) => {
-      console.log(err, "error retrieving playlist songs");
+      resolve([]);
     });
   });
 };
@@ -79,6 +81,7 @@ songController.likeSongs = (songs, userId) => {
           if (songId===results[i]) return;
         }
         raccoon.liked(userId,songId, ()=>{
+          console.log(userId,`liked`, songId);
         });
       });
     });
