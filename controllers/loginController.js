@@ -17,7 +17,6 @@ loginController.login = (req, res, next) => {
   req.spotifyApi.authorizationCodeGrant(body.code)
   .then(data => {
     if (data.statusCode === 200) {
-      console.log(token.access_token);
       token.access_token = data.body['access_token'];
       token.expires_in = data.body['expires_in'];
       token.refresh_token = data.body['refresh_token'];
