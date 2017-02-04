@@ -203,7 +203,7 @@ movieController.survey=(req,res)=>{
       let page =Math.floor(Math.random()*50+1);
 
       request.get(`${url}&page=${page}`, (error, response, body) => {
-        let receivedMovies=JSON.parse(body).results.filter(movie => (movie.poster_path)).map(movie=>movie.id.toString());
+        let receivedMovies=JSON.parse(body).results.filter(movie => (movie.poster_path)).map(movie=>movie.id.toString())
         .then(response=>{
           ratedMovies=response;
           moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
