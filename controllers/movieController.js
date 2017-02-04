@@ -108,7 +108,7 @@ movieController.alldislikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allLikedFor(userId,(results) => {
+      raccoon.alldislikedFor(userId,(results) => {
         const ratedMovies= results.filter(like =>!like.includes('SP'));
         return res.send({movies:ratedMovies});
       });
@@ -129,8 +129,10 @@ movieController.recommendation=(req,res)=>{
       const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
       raccoon.recommendFor(userId, 10,rec => {
+        rec=_.difference(rec,alreadyRecommended);
         alreadyRecommended.push(rec[0]);
         userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+
         return res.send({
           "movieId": rec[0],
         });
