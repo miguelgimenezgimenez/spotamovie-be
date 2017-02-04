@@ -10,7 +10,6 @@ let movieController = {};
 
 
 movieController.like=(req,res)=>{
-  console.log(req.headers.authorization, "AUTHORIZATION");
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
@@ -81,8 +80,11 @@ movieController.undislike=(req,res)=>{
 
 
 movieController.allLikes=(req,res)=>{
+  console.log(req.headers.authorization, "AUTHORIZATION");
+
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
+  console.log(token);
   UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length>0) {
@@ -98,6 +100,7 @@ movieController.allLikes=(req,res)=>{
   });
 };
 movieController.alldislikes=(req,res)=>{
+
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
