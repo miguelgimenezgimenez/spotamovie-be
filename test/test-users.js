@@ -66,4 +66,46 @@ describe('Users:', () => {
     });
   });
 
+  it('it should produce an error when missing Spotify ID', (done) => {
+    const newUser = {
+      token: '12345',
+      loginDate: Date.now()
+    };
+
+    const user = new UserSchema(newUser);
+
+    user.validate(error => {
+      error.errors.spotifyId.should.exist;
+      done();
+    });
+  });
+
+  it('it should produce an error when missing user token', (done) => {
+    const newUser = {
+      spotifyId: 'spotify2342342',
+      loginDate: Date.now()
+    };
+
+    const user = new UserSchema(newUser);
+
+    user.validate(error => {
+      error.errors.userToken.should.exist;
+      done();
+    });
+  });
+
+  it('it should produce an error when missing loginDate', (done) => {
+    const newUser = {
+      spotifyId: 'spotify2342342',
+      token: 'token12345'
+    };
+
+    const user = new UserSchema(newUser);
+
+    user.validate(error => {
+      error.errors.loginDate.should.exist;
+      done();
+    });
+  });
+
 });
