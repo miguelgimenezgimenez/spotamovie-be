@@ -65,7 +65,8 @@ const getSongsByPlaylist=(playlist_id, userId, req)=>{
       resolve(data.body);
     })
     .catch((err) => {
-      console.log(err, "error retrieving playlist songs");
+      resolve({});
+      // console.log(err, "error retrieving playlist songs");
     });
   });
 };
