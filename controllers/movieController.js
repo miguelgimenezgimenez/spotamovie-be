@@ -133,11 +133,8 @@ movieController.recommendation=(req,res)=>{
         if (rec.length===0) {
           let page =Math.floor(Math.random()*40+1);
 
-
           request.get(`${url}&page=${page}`, (error, response, body) => {
-            console.log(JSON.parse(body).results.filter((movie) => !movie.poster_path), "RECCID");
             let receivedMovies=JSON.parse(body).results.filter((movie) => !movie.poster_path).map((movie=>movie.id.toString()));
-            console.log('receivedMovies', receivedMovies);
             findRatedMovies(userId)
             .then(response=>{
               const movie=(handleMovies(receivedMovies,1,response)[0]);
@@ -174,7 +171,6 @@ const findRatedMovies=(userId)=>{
 
 
 const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
-
   moviesToBeSent=_.difference(moviesToBeSent,moviesAllreadyRecommended);
   return moviesToBeSent.slice(0,n);
 };
