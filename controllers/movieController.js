@@ -10,6 +10,7 @@ let movieController = {};
 
 
 movieController.like=(req,res)=>{
+  console.log(req.headers.authorization, "AUTHORIZATION");
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
