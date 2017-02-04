@@ -80,7 +80,6 @@ movieController.undislike=(req,res)=>{
 
 
 movieController.allLikes=(req,res)=>{
-  console.log(req.headers.authorization, "AUTHORIZATION");
 
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
@@ -180,7 +179,7 @@ movieController.survey=(req,res)=>{
       //======================================================
       // GET TMDB movies
       //======================================================
-      let page =Math.floor(Math.random()*10+1);
+      let page =Math.floor(Math.random()*20+1);
       request.get(`${url}&page=${page}`, (error, response, body) => {
         let receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
         findRatedMovies(userId)
@@ -194,7 +193,7 @@ movieController.survey=(req,res)=>{
             moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
             ratedMovies=ratedMovies.concat(moviesToBeSent);
             //GET WEIRD MOVIES
-            request.get(`${url}&sort_by=popularity.asc&page=${page+10}`, (error, response, body) => {
+            request.get(`${url}&sort_by=vote_average.asc&page=${page+50}`, (error, response, body) => {
               receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
               moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
               return res.send({movies:moviesToBeSent});
