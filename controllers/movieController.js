@@ -133,6 +133,7 @@ movieController.recommendation=(req,res)=>{
         if (rec.length===0) {
           let page =Math.floor(Math.random()*40+1);
 
+
           request.get(`${url}&page=${page}`, (error, response, body) => {
             let receivedMovies=JSON.parse(body).results.filter((movie) => !movie.poster_path).map((movie=>movie.id.toString()));
             findRatedMovies(userId)
@@ -200,6 +201,7 @@ movieController.survey=(req,res)=>{
 
       request.get(`${url}&page=${page}`, (error, response, body) => {
         let receivedMovies=JSON.parse(body).results.filter(movie => (movie.poster_path)).map(movie=>movie.id.toString())
+        findRatedMovies(userId)
         .then(response=>{
           ratedMovies=response;
           moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
@@ -210,7 +212,6 @@ movieController.survey=(req,res)=>{
             let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
             moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
             ratedMovies=ratedMovies.concat(moviesToBeSent);
-
             //GET WEIRD MOVIES
             page+=3;
             request.get(`${url}&sort_by=popularity.desc.asc&page=${page+50}`, (error, response, body) => {
