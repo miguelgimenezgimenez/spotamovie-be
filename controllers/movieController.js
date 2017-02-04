@@ -6,8 +6,8 @@ const nconf = require('../config/nconf.js');
 const raccoon = require('../config/raccoon.js');
 const _ = require('underscore');
 
-let movieController = {};
-
+const movieController = {};
+  const url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
 
 movieController.like=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
@@ -83,7 +83,6 @@ movieController.allLikes=(req,res)=>{
 
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
-  console.log(token);
   UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length>0) {
@@ -98,6 +97,7 @@ movieController.allLikes=(req,res)=>{
     }
   });
 };
+
 movieController.alldislikes=(req,res)=>{
 
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
@@ -128,14 +128,31 @@ movieController.recommendation=(req,res)=>{
       const userId=response[0].spotifyId;
       const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
-      raccoon.recommendFor(userId, 10,rec => {
-        rec=_.difference(rec,alreadyRecommended);
-        alreadyRecommended.push(rec[0]);
-        userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+      raccoon.recommendFor(userId, 100,rec => {
+        rec=_.difference(rec,alreadyRecommended).filter(like =>!like.includes('SP'));
+        if (rec.length===0) {
+          let page =Math.floor(Math.random()*40+1);
+          request.get(`${url}&page=${page}`, (error, response, body) => {
+            let receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
+            findRatedMovies(userId)
+            .then(response=>{
+              const movie=(handleMovies(receivedMovies,1,response)[0]);
+              console.log(movie);
+              res.send({
+                "movieId": movie,
+              });
+            });
+          });
 
-        return res.send({
-          "movieId": rec[0],
-        });
+
+        } else {
+          alreadyRecommended.push(rec[0]);
+          userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+          return res.send({
+            "movieId": rec[0],
+          });
+        }
+
       });
     }else{
       return res.sendStatus(401);
@@ -160,7 +177,7 @@ const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
 
 
 movieController.survey=(req,res)=>{
-  let url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
+
   let numberOfmovies=1;
   let moviesToBeSent=[];
   let ratedMovies=[];
