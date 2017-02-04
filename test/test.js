@@ -153,7 +153,7 @@ describe('Login:', () => {
     response.send = (obj) => {
       try {
         response.status.should.be.eq(400);
-        obj.should.be.eq(spotifyMockError);
+        obj.error.should.exist;
         done();
       } catch (err) {
         done(err);
