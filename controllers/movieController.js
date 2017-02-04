@@ -108,7 +108,7 @@ movieController.alldislikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.alldislikedFor(userId,(results) => {
+      raccoon.allDislikedFor(userId,(results) => {
         const ratedMovies= results.filter(like =>!like.includes('SP'));
         return res.send({movies:ratedMovies});
       });
@@ -122,6 +122,7 @@ movieController.alldislikes=(req,res)=>{
 movieController.recommendation=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
+
   UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length>0) {
