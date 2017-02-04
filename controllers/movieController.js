@@ -20,7 +20,7 @@ movieController.like=(req,res)=>{
       raccoon.liked(userId,movieId, ()=>{
         console.log(userId,'liked',movieId);
       });
-      return res.sendStatus(201);
+      return res.sendStatus(200);
     }
     return res.sendStatus(401);
   });
@@ -37,7 +37,7 @@ movieController.dislike=(req,res)=>{
       raccoon.disliked(userId,movieId, ()=>{
         console.log(userId,'disliked',movieId);
       });
-      return res.sendStatus(201);
+      return res.sendStatus(200);
     }
     return res.sendStatus(401);
   });
@@ -71,7 +71,7 @@ movieController.undislike=(req,res)=>{
       raccoon.undisliked(userId,movieId, ()=>{
         console.log(userId,'undisliked',movieId);
       });
-      return res.sendStatus(201);
+      return res.sendStatus(200);
     }
     return res.sendStatus(401);
   });
