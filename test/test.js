@@ -142,7 +142,7 @@ describe('Login:', () => {
       "error_description": "Invalid authorization code"
     };
 
-    stubAuth.restore();
+    Stub.removeStub(stubAuth);
 
     stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
       {
@@ -153,7 +153,7 @@ describe('Login:', () => {
     response.send = (obj) => {
       try {
         response.status.should.be.eq(400);
-        obj.error.should.exist;
+        obj.should.be.eq(spotifyMockError);
         done();
       } catch (err) {
         done(err);
