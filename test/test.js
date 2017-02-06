@@ -11,6 +11,7 @@ let should = chai.should();
 const nconf = require('../config/nconf.js');
 const spotifyWebApi = require('spotify-web-api-node');
 
+const UserSchema =require('../models/User');
 const loginController = require('../controllers/loginController');
 const Stub = require('./stub');
 const mocks = require('./mocks');
@@ -59,6 +60,12 @@ describe('Login:', () => {
         done();
       } catch (err) {
         done(err);
+      } finally {
+        UserSchema.findOneAndRemove({
+          _id: obj._id
+        }, (err, removed) => {
+          if (err) throw err;
+        });
       }
 
     };
