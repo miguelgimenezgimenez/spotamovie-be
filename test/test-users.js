@@ -51,19 +51,17 @@ describe('Users:', () => {
       } catch (err) {
         done(err);
       } finally {
-        UserSchema.remove({
+        UserSchema.findOneAndRemove({
           _id: user._id
         }, (err, removed) => {
-          if (err) console.log('error during remove', err);
+          if (err) throw err;
         });
       }
     });
   });
 
   it('it should should retrieve a user document given a valid user token', (done) => {
-    request.headers = {
-      authorization: 'Bearer ' + mocks.accessToken
-    };
+    request.headers = mocks.authHeader;
 
     const newUser = new UserSchema(mocks.userObj);
 
@@ -83,20 +81,16 @@ describe('Users:', () => {
         user.spotifyId.should.eq(mocks.userObj.spotifyId);
         user.should.have.property('userToken');
         user.userToken.should.eq(mocks.userObj.userToken);
-
         done();
       } catch (err) {
         done(err);
       } finally {
-        UserSchema.remove({
+        UserSchema.findOneAndRemove({
           _id: user._id
         }, (err, removed) => {
-          console.log('removed?');
-          if (err) console.log('error during remove', err);
-          if (removed.n > 0) console.log('removed', removed);
+          if (err) throw err;
         });
       }
-
     };
 
   });

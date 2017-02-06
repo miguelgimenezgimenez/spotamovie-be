@@ -36,6 +36,10 @@ mocks.spotifyAuthErrReponse = {
   body: mocks.spotifyAuthError
 };
 
+mocks.authHeader = {
+  authorization: 'Bearer ' + mocks.accessToken
+};
+
 mocks.spotifyId = 'spotify234234';
 
 mocks.userProfile = {
@@ -73,8 +77,8 @@ mocks.tracks = {
 
 // mock users collection data
 mocks.userInfo = {
-  display_name: 'John Doe',
-  email: 'jdoe@email.com',
+  display_name: mocks.userProfile.body.display_name,
+  email: mocks.userProfile.body.email,
   id: mocks.spotifyId
 };
 
