@@ -14,7 +14,10 @@ userController.me=((req,res,next)=>{
     if (((Date.now()-response[0].loginDate)/60000)>24) {
       return res.sendStatus(401, 'token expired');
     }
-    if (response.length>0) return res.send(response[0]);
+    if (response.length>0) {
+      res.status = 200;
+      return res.send(response[0]);
+    }
   });
 });
 

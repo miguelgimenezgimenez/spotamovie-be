@@ -60,6 +60,47 @@ describe('Users:', () => {
     });
   });
 
+  it('it should should retrieve a user document given a valid user token', (done) => {
+    request.headers = {
+      authorization: 'Bearer ' + mocks.accessToken
+    };
+
+    const newUser = new UserSchema(mocks.userObj);
+
+    newUser.save((err) => {
+      if (err) throw err;
+      userController.me(request, response);
+    });
+
+    response.send = (user) => {
+      try {
+        response.status.should.be.eq(200);
+        user.should.be.a('object');
+        user.should.have.property('_id');
+        user.should.have.property('name');
+        user.name.should.eq(mocks.userObj.name);
+        user.should.have.property('spotifyId');
+        user.spotifyId.should.eq(mocks.userObj.spotifyId);
+        user.should.have.property('userToken');
+        user.userToken.should.eq(mocks.userObj.userToken);
+
+        done();
+      } catch (err) {
+        done(err);
+      } finally {
+        UserSchema.remove({
+          _id: user._id
+        }, (err, removed) => {
+          console.log('removed?');
+          if (err) console.log('error during remove', err);
+          if (removed.n > 0) console.log('removed', removed);
+        });
+      }
+
+    };
+
+  });
+
   it('it should produce an error when missing Spotify ID', (done) => {
     const newUser = mocks.userInfoInvalid1;
 

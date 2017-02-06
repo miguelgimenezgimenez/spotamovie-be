@@ -93,15 +93,34 @@ mocks.userInfoInvalid3 = {
   token: mocks.accessToken
 };
 
-mocks.userDoc = {
+mocks.userObj = {
+  "name": mocks.userProfile.body.display_name,
+  "spotifyId": mocks.spotifyId,
+  "userToken": mocks.accessToken,
+  loginDate: Date.now()
+};
+
+mocks.userDocNew = {
     "_id" : "1234567890abcdefghijk",
-    "name" : "John Doe",
-    "email" : "jdoe@gmail.com",
+    "name" : mocks.userProfile.body.display_name,
+    "email" : mocks.userProfile.body.email,
     "spotifyId" : mocks.spotifyId,
     "userToken" : mocks.accessToken,
     "loginDate" : Date.now(),
     "firstLogin" : false,
-    "createdAt" : "2017-02-06",
+    "createdAt" : Date.now(),
+    "__v" : 0
+};
+
+mocks.userDocOld = {
+    "_id" : "1234567890abcdefghijk",
+    "name" : mocks.userProfile.body.display_name,
+    "email" : mocks.userProfile.body.email,
+    "spotifyId" : mocks.spotifyId,
+    "userToken" : mocks.accessToken,
+    "loginDate" : Date.now(),
+    "firstLogin" : false,
+    "createdAt" : "2016-12-01",
     "__v" : 0
 };
 
