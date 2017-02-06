@@ -13,6 +13,7 @@ const spotifyWebApi = require('spotify-web-api-node');
 
 const loginController = require('../controllers/loginController');
 const Stub = require('./stub');
+const mocks = require('./mocks');
 
 chai.use(chaiHttp);
 chai.use(sinonChai);
@@ -23,39 +24,16 @@ describe('Login:', () => {
   let request, response;
   beforeEach(() => {
     request = {
-      spotifyApi: new spotifyWebApi({
-        clientId : 'SPOTIFY_CLIENT_ID',
-        clientSecret : 'SPOTIFY_CLIENT_SECRET',
-        redirectUri : 'SPOTIFY_REDIRECT_URI'
-      })
+      spotifyApi: new spotifyWebApi(mocks.spotifyObj)
     };
 
-    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
-      {
-        statusCode: 200,
-        body: { access_token: 'token' }
-      });
+    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant', mocks.authResponseObj);
 
-    stubGetMe = Stub.createStub(request.spotifyApi, 'getMe',
-      {
-        body: {
-          country: 'ES',
-          display_name: 'Ro Rey',
-          email: 'someone@gmail.com',
-          external_urls: { spotify: 'https://open.spotify.com/user/djdjdjdj' },
-          followers: { href: null, total: 0 },
-          href: 'https://api.spotify.com/v1/users/djdjdjdj',
-          id: 'ou2o3iu453245',
-          images: [ [Object] ],
-          product: 'open',
-          type: 'user',
-          uri: 'spotify:user:djdjdjdj'
-        }
-      });
+    stubGetMe = Stub.createStub(request.spotifyApi, 'getMe', mocks.userProfile);
 
-    stubGetUserPlaylists = Stub.createStub(request.spotifyApi, 'getUserPlaylists', { body: { items: [{id: 3838383}, {id: 393939}] }});
+    stubGetUserPlaylists = Stub.createStub(request.spotifyApi, 'getUserPlaylists', mocks.playlists);
 
-    stubGetPlaylistTracks = Stub.createStub(request.spotifyApi, 'getPlaylistTracks', { body: { items: [{track: {id: 2423}}, {track: {id: 7474}}, {track: {id: 92929}}, {track: {id: 94949}}]}});
+    stubGetPlaylistTracks = Stub.createStub(request.spotifyApi, 'getPlaylistTracks', mocks.tracks);
 
     response = {};
   });
@@ -70,9 +48,7 @@ describe('Login:', () => {
   });
 
   it('login should succeed given proper user credentials', (done) => {
-    request.body = {
-      code: '83838383k3i'
-    };
+    request.body = mocks.authCodeBody;
 
     response.send = (obj) => {
       try {
@@ -109,14 +85,8 @@ describe('Login:', () => {
 
   it('login should fail without proper Spotify API credentials', (done) => {
     request = {
-      body: {
-        code: '83838383k3i'
-      },
-      spotifyApi: new spotifyWebApi({
-        clientId : null,
-        clientSecret : null,
-        redirectUri : 'SPOTIFY_REDIRECT_URI'
-      })
+      body: mocks.authCodeBody,
+      spotifyApi: new spotifyWebApi(mocks.spotifyObjInvalid)
     };
 
     response.sendStatus = (status) => {
@@ -133,27 +103,16 @@ describe('Login:', () => {
   });
 
   it('login should fail if authorization fails', (done) => {
-    request.body = {
-      code: '83838383k3i'
-    };
-
-    const spotifyMockError = {
-      "error": "invalid_grant",
-      "error_description": "Invalid authorization code"
-    };
+    request.body = mocks.authCodeBody;
 
     Stub.removeStub(stubAuth);
 
-    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
-      {
-        statusCode: 400,
-        body: spotifyMockError
-      });
+    stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant', mocks.spotifyAuthErrReponse);
 
     response.send = (obj) => {
       try {
         response.status.should.be.eq(400);
-        obj.should.be.eq(spotifyMockError);
+        obj.should.be.eq(mocks.spotifyAuthError);
         done();
       } catch (err) {
         done(err);
