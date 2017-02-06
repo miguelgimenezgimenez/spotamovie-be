@@ -142,7 +142,7 @@ describe('Login:', () => {
       "error_description": "Invalid authorization code"
     };
 
-    stubAuth.restore();
+    Stub.removeStub(stubAuth);
 
     stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant',
       {
