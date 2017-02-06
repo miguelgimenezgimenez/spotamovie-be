@@ -10,6 +10,7 @@ let should = chai.should();
 const UserSchema =require('../models/User');
 const userController = require('../controllers/userController');
 const Stub = require('./stub');
+const mocks = require('./mocks');
 
 chai.use(chaiHttp);
 chai.use(sinonChai);
@@ -29,14 +30,9 @@ describe('Users:', () => {
 
   it('it should save a new user record to the database given valid data', (done) => {
     const newUser = {
-      body: {
-        display_name: 'John Doe',
-        email: 'jdoe@email.com',
-        id: '123456asdfg',
-        firstLogin: true
-      }
+      body: mocks.userDoc
     };
-    const token = 'token12345';
+    const token = mocks.accessToken;
 
     userController.newUser(newUser, token)
     .then((user)=>{
@@ -67,10 +63,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing Spotify ID', (done) => {
-    const newUser = {
-      token: '12345',
-      loginDate: Date.now()
-    };
+    const newUser = mocks.userDocInvalid1;
 
     const user = new UserSchema(newUser);
 
@@ -81,10 +74,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing user token', (done) => {
-    const newUser = {
-      spotifyId: 'spotify2342342',
-      loginDate: Date.now()
-    };
+    const newUser = mocks.userDocInvalid2;
 
     const user = new UserSchema(newUser);
 
@@ -95,10 +85,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing loginDate', (done) => {
-    const newUser = {
-      spotifyId: 'spotify2342342',
-      token: 'token12345'
-    };
+    const newUser = mocks.userDocInvalid3;
 
     const user = new UserSchema(newUser);
 
