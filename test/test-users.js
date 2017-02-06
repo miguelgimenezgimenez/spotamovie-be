@@ -48,7 +48,7 @@ describe('Users:', () => {
         user['name'].should.be.eq(newUser.body.display_name);
         user['email'].should.be.eq(newUser.body.email);
         user['spotifyId'].should.be.eq(newUser.body.id);
-        user['firstLogin'].isFalse;
+        user['firstLogin'].should.be.true;
         done();
       } catch (err) {
         done(err);
