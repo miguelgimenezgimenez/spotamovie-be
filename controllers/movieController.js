@@ -6,6 +6,7 @@ const nconf = require('../config/nconf.js');
 const raccoon = require('../config/raccoon.js');
 const _ = require('underscore');
 
+
 const movieController = {};
 const url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
 
@@ -135,11 +136,10 @@ movieController.recommendation=(req,res)=>{
 
 
           request.get(`${url}&page=${page}`, (error, response, body) => {
-            let receivedMovies=JSON.parse(body).results.filter((movie) => !movie.poster_path).map((movie=>movie.id.toString()));
+            let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
             findRatedMovies(userId)
             .then(response=>{
               const movie=(handleMovies(receivedMovies,1,response)[0]);
-              console.log(movie);
               res.send({
                 "movieId": movie,
               });
