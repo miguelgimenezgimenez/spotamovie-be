@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const UserSchema =require('../models/User');
-const songController = require('./songController');
 
 const userController={};
 
@@ -42,6 +41,7 @@ userController.updateUser=(id,updateKey)=>{
         spotifyId:userInfo.body.id,
         userToken:token,
         loginDate:Date.now(),
+        firstLogin: true
       });
       newUser.save((err,user) => {
         if(err) {

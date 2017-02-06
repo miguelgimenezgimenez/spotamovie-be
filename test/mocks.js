@@ -75,8 +75,7 @@ mocks.tracks = {
 mocks.userDoc = {
   display_name: 'John Doe',
   email: 'jdoe@email.com',
-  id: mocks.spotifyId,
-  firstLogin: true
+  id: mocks.spotifyId
 };
 
 mocks.userDocInvalid1 = {
