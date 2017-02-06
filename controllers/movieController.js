@@ -6,8 +6,9 @@ const nconf = require('../config/nconf.js');
 const raccoon = require('../config/raccoon.js');
 const _ = require('underscore');
 
-let movieController = {};
 
+const movieController = {};
+const url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
 
 movieController.like=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
@@ -26,6 +27,23 @@ movieController.like=(req,res)=>{
   });
 };
 
+movieController.dislike=(req,res)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const userId=response[0].spotifyId;
+      const movieId=req.params.movieId;
+      raccoon.disliked(userId,movieId, ()=>{
+        console.log(userId,'disliked',movieId);
+      });
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(401);
+  });
+};
+
 movieController.unlike=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
@@ -37,7 +55,7 @@ movieController.unlike=(req,res)=>{
       raccoon.unliked(userId,movieId, ()=>{
         console.log(userId,'unliked',movieId);
       });
-      return res.sendStatus(200);
+      return res.send(movieId);
     }
     return res.sendStatus(401);
   });
@@ -59,25 +77,11 @@ movieController.undislike=(req,res)=>{
     return res.sendStatus(401);
   });
 };
-movieController.dislike=(req,res)=>{
-  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
-  const token =req.headers.authorization.split(' ')[1];
-  UserSchema.find({userToken:token})
-  .then(response=>{
-    if (response.length>0) {
-      const userId=response[0].spotifyId;
-      const movieId=req.params.movieId;
-      raccoon.disliked(userId,movieId, ()=>{
-        console.log(userId,'disliked',movieId);
-      });
-      return res.sendStatus(200);
-    }
-    return res.sendStatus(401);
-  });
-};
+
 
 
 movieController.allLikes=(req,res)=>{
+
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
@@ -86,14 +90,17 @@ movieController.allLikes=(req,res)=>{
       const userId=response[0].spotifyId;
       let movie;
       raccoon.allLikedFor(userId,(results) => {
-        return res.send(results);
+        const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
+        return res.send({movies:ratedMovies});
       });
     }else{
       return res.sendStatus(401);
     }
   });
 };
+
 movieController.alldislikes=(req,res)=>{
+
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
@@ -101,8 +108,9 @@ movieController.alldislikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allLikedFor(userId,(results) => {
-        return res.send(results);
+      raccoon.allDislikedFor(userId,(results) => {
+        const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
+        return res.send({movies:ratedMovies});
       });
     }else{
       return res.sendStatus(401);
@@ -114,13 +122,38 @@ movieController.alldislikes=(req,res)=>{
 movieController.recommendation=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
+
   UserSchema.find({userToken:token})
   .then(response=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
+      const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
-      raccoon.recommendFor(userId, 10,rec => {
-        return res.send(rec);
+      raccoon.recommendFor(userId, 100,rec => {
+        rec=_.difference(rec,alreadyRecommended).filter(like =>!like.includes('SP'));
+        if (rec.length===0) {
+          let page =Math.floor(Math.random()*40+1);
+
+
+          request.get(`${url}&page=${page}`, (error, response, body) => {
+            let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
+            findRatedMovies(userId)
+            .then(response=>{
+              const movie=(handleMovies(receivedMovies,1,response)[0]);
+              res.send({
+                "movieId": movie,
+              });
+            });
+          });
+        } else {
+          console.log('raccon recommendation');
+          alreadyRecommended.push(rec[0]);
+          userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+          return res.send({
+            "movieId": rec[0],
+          });
+        }
+
       });
     }else{
       return res.sendStatus(401);
@@ -146,7 +179,6 @@ const handleMovies = (moviesToBeSent,n,moviesAllreadyRecommended) =>{
 
 movieController.survey=(req,res)=>{
 
-  let url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
   let numberOfmovies=1;
   let moviesToBeSent=[];
   let ratedMovies=[];
@@ -165,25 +197,27 @@ movieController.survey=(req,res)=>{
       //======================================================
       // GET TMDB movies
       //======================================================
-      let page =Math.floor(Math.random()*10+1);
-      request.get(`${url}&page=${page}`, (error, response, body) => {
-        let receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
+      let page =Math.floor(Math.random()*50+1);
 
+      request.get(`${url}&page=${page}`, (error, response, body) => {
+        let receivedMovies=JSON.parse(body).results.filter(movie => (movie.poster_path)).map(movie=>movie.id.toString())
         findRatedMovies(userId)
         .then(response=>{
           ratedMovies=response;
           moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
           ratedMovies=ratedMovies.concat(moviesToBeSent);
+
           //GET POPULAR MOVIES
           request.get(`${url}&sort_by=popularity.desc&page=${page}`, (error, response, body) => {
-            receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
+            let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
             moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
             ratedMovies=ratedMovies.concat(moviesToBeSent);
             //GET WEIRD MOVIES
-            request.get(`${url}&sort_by=popularity.asc&page=${page+10}`, (error, response, body) => {
-              receivedMovies=JSON.parse(body).results.map((movie=>movie.id));
+            page+=3;
+            request.get(`${url}&sort_by=popularity.desc.asc&page=${page+50}`, (error, response, body) => {
+              let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
               moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
-              return res.send(moviesToBeSent);
+              return res.send({movies:moviesToBeSent});
             });
           });
         });
