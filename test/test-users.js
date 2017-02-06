@@ -15,8 +15,6 @@ const mocks = require('./mocks');
 chai.use(chaiHttp);
 chai.use(sinonChai);
 
-let stubUpdateUser, stubNewUser;
-
 describe('Users:', () => {
   let request, response;
   beforeEach(() => {
@@ -30,7 +28,7 @@ describe('Users:', () => {
 
   it('it should save a new user record to the database given valid data', (done) => {
     const newUser = {
-      body: mocks.userDoc
+      body: mocks.userInfo
     };
     const token = mocks.accessToken;
 
@@ -63,7 +61,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing Spotify ID', (done) => {
-    const newUser = mocks.userDocInvalid1;
+    const newUser = mocks.userInfoInvalid1;
 
     const user = new UserSchema(newUser);
 
@@ -74,7 +72,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing user token', (done) => {
-    const newUser = mocks.userDocInvalid2;
+    const newUser = mocks.userInfoInvalid2;
 
     const user = new UserSchema(newUser);
 
@@ -85,7 +83,7 @@ describe('Users:', () => {
   });
 
   it('it should produce an error when missing loginDate', (done) => {
-    const newUser = mocks.userDocInvalid3;
+    const newUser = mocks.userInfoInvalid3;
 
     const user = new UserSchema(newUser);
 

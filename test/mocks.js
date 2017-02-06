@@ -72,25 +72,37 @@ mocks.tracks = {
 };
 
 // mock users collection data
-mocks.userDoc = {
+mocks.userInfo = {
   display_name: 'John Doe',
   email: 'jdoe@email.com',
   id: mocks.spotifyId
 };
 
-mocks.userDocInvalid1 = {
+mocks.userInfoInvalid1 = {
   token: mocks.accessToken,
   loginDate: Date.now()
 };
 
-mocks.userDocInvalid2 = {
+mocks.userInfoInvalid2 = {
   spotifyId: mocks.spotifyId,
   loginDate: Date.now()
 };
 
-mocks.userDocInvalid3 = {
+mocks.userInfoInvalid3 = {
   spotifyId: mocks.spotifyId,
   token: mocks.accessToken
+};
+
+mocks.userDoc = {
+    "_id" : "1234567890abcdefghijk",
+    "name" : "John Doe",
+    "email" : "jdoe@gmail.com",
+    "spotifyId" : mocks.spotifyId,
+    "userToken" : mocks.accessToken,
+    "loginDate" : Date.now(),
+    "firstLogin" : false,
+    "createdAt" : "2017-02-06",
+    "__v" : 0
 };
 
 module.exports = mocks;
