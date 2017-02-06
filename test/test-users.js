@@ -95,12 +95,28 @@ describe('Users:', () => {
 
   });
 
-  it('it should send an error when missing authorization header in request', (done) => {
+  it('it should return an error when missing authorization header in request', (done) => {
     request.headers = mocks.authHeaderMissing;
 
     response.sendStatus = (status) => {
       try {
         status.should.be.eq(400);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    userController.me(request, response);
+
+  });
+
+  it('it should return an error if user with given token doesn\'t exist', (done) => {
+    request.headers = mocks.authHeader;
+
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(401);
         done();
       } catch (err) {
         done(err);
