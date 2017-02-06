@@ -126,7 +126,7 @@ mocks.userDocOld = {
     "email" : mocks.userProfile.body.email,
     "spotifyId" : mocks.spotifyId,
     "userToken" : mocks.accessToken,
-    "loginDate" : Date.now(),
+    "loginDate" : 1481054578000,
     "firstLogin" : false,
     "createdAt" : "2016-12-01",
     "__v" : 0

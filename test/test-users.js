@@ -127,6 +127,26 @@ describe('Users:', () => {
 
   });
 
+  it('it should return an error if the given token has expired', (done) => {
+    request.headers = mocks.authHeader;
+
+    const stubFind = Stub.createStub(UserSchema, 'find', [mocks.userDocOld]);
+
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(401);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    userController.me(request, response);
+
+    Stub.removeStub(stubFind);
+
+  });
+
   it('it should produce an error when missing Spotify ID', (done) => {
     const newUser = mocks.userInfoInvalid1;
 
