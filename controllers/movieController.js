@@ -90,7 +90,7 @@ movieController.allLikes=(req,res)=>{
       const userId=response[0].spotifyId;
       let movie;
       raccoon.allLikedFor(userId,(results) => {
-        const ratedMovies= results.filter(like =>!like.includes('SP'));
+        const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
     }else{
@@ -109,7 +109,7 @@ movieController.alldislikes=(req,res)=>{
       const userId=response[0].spotifyId;
       let movie;
       raccoon.allDislikedFor(userId,(results) => {
-        const ratedMovies= results.filter(like =>!like.includes('SP'));
+        const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
     }else{
