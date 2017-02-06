@@ -1,5 +1,6 @@
 const mocks = {};
 
+// mock Spotify data
 mocks.spotifyObj = {
   clientId : '123456',
   clientSecret : 'abcdef',
@@ -12,13 +13,17 @@ mocks.spotifyObjInvalid = {
   redirectUri : 'spotamovie://callback'
 };
 
+mocks.authCode = '999999999';
+
 mocks.authCodeBody = {
-  code: '999999999'
+  code: mocks.authCode
 };
+
+mocks.accessToken = 'token12345';
 
 mocks.authResponseObj = {
   statusCode: 200,
-  body: { access_token: 'token12345' }
+  body: { access_token: mocks.accessToken }
 };
 
 mocks.spotifyAuthError = {
@@ -31,19 +36,21 @@ mocks.spotifyAuthErrReponse = {
   body: mocks.spotifyMockError
 };
 
+mocks.spotifyId = 'spotify234234';
+
 mocks.userProfile = {
   body: {
     country: 'ES',
-    display_name: 'Ro Rey',
-    email: 'someone@gmail.com',
-    external_urls: { spotify: 'https://open.spotify.com/user/djdjdjdj' },
+    display_name: 'John Doe',
+    email: 'jdoe@gmail.com',
+    external_urls: { spotify: 'https://open.spotify.com/user/' + mocks.spotifyId },
     followers: { href: null, total: 0 },
-    href: 'https://api.spotify.com/v1/users/djdjdjdj',
-    id: 'djdjdjdj',
+    href: 'https://api.spotify.com/v1/users/' + mocks.spotifyId,
+    id: mocks.spotifyId,
     images: [ [Object] ],
     product: 'open',
     type: 'user',
-    uri: 'spotify:user:djdjdjdj'
+    uri: 'spotify:user:' + mocks.spotifyId
   }
 };
 
@@ -62,4 +69,27 @@ mocks.tracks = {
       {track: {id: 454545}}
     ]
   }
+};
+
+// mock users collection data
+mocks.userDoc = {
+  display_name: 'John Doe',
+  email: 'jdoe@email.com',
+  id: mocks.spotifyId,
+  firstLogin: true
+};
+
+mocks.userDocInvalid1 = {
+  token: mocks.accessToken,
+  loginDate: Date.now()
+};
+
+mocks.userDocInvalid2 = {
+  spotifyId: mocks.spotifyId,
+  loginDate: Date.now()
+};
+
+mocks.userDocInvalid3 = {
+  spotifyId: mocks.spotifyId,
+  token: mocks.accessToken
 };
