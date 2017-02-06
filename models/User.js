@@ -11,7 +11,7 @@ const UserSchema = new Schema(
     createdAt: { type: Date, default: Date.now },
     loginDate: {type:Number,required:true},
     firstLogin:{type:Boolean, default:false},
-
+    alreadyRecommended:{type:Array, require: false}
   }
 );
 
