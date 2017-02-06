@@ -6,6 +6,7 @@ const spotifyApi = require('./lib/spotifyWebApi');
 //local require\
 const db=require('./db');
 const router = require('./router.js');
+const nconf = require('nconf');
 
 //don't show the log when it is test
 if(process.env.NODE_ENV !== 'test') {
@@ -20,8 +21,10 @@ app.use(function(req, res, next){
 });
 app.use(router);
 
-app.listen(8888, function () {
-  console.log('Listening on port 8888');
+const port = nconf.get('PORT') || 3000;
+
+app.listen(port, function () {
+  console.log('Listening on port ' + port);
 });
 
 
