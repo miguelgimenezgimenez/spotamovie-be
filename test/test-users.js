@@ -60,7 +60,7 @@ describe('Users:', () => {
     });
   });
 
-  it('it should should retrieve a user document given a valid user token', (done) => {
+  it('it should retrieve a user document given a valid user token', (done) => {
     request.headers = mocks.authHeader;
 
     const newUser = new UserSchema(mocks.userObj);
@@ -92,6 +92,22 @@ describe('Users:', () => {
         });
       }
     };
+
+  });
+
+  it('it should send an error when missing authorization header in request', (done) => {
+    request.headers = mocks.authHeaderMissing;
+
+    response.sendStatus = (status) => {
+      try {
+        status.should.be.eq(400);
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+
+    userController.me(request, response);
 
   });
 

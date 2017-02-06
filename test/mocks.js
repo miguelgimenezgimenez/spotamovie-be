@@ -40,6 +40,10 @@ mocks.authHeader = {
   authorization: 'Bearer ' + mocks.accessToken
 };
 
+mocks.authHeaderMissing = {
+  authorization: null
+};
+
 mocks.spotifyId = 'spotify234234';
 
 mocks.userProfile = {
