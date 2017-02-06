@@ -33,7 +33,7 @@ mocks.spotifyAuthError = {
 
 mocks.spotifyAuthErrReponse = {
   statusCode: 400,
-  body: mocks.spotifyMockError
+  body: mocks.spotifyAuthError
 };
 
 mocks.spotifyId = 'spotify234234';
@@ -93,3 +93,5 @@ mocks.userDocInvalid3 = {
   spotifyId: mocks.spotifyId,
   token: mocks.accessToken
 };
+
+module.exports = mocks;
