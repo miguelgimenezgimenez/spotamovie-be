@@ -6,23 +6,27 @@ const loginController = require('./loginController');
 let songs = [];
 
 songController.storePlaylists = (user, access_token, req) => {
-  req.spotifyApi.getUserPlaylists(user.spotifyId)
-  .then((data) => {
-    if (data.body.items) {
-      const playlists=data.body.items.map((playlist) => playlist.id);
-        return processPlaylists(playlists, user.spotifyId, req) ;
-    }
-    else {
-      console.log('no playlists');
-      return;
-    }
-  })
-  .then(songs => {
-    songController.likeSongs(songs, user.spotifyId);
-    return songs;
-  })
-  .catch((err) => {
-    console.log(err, "error in songController");
+  return new Promise((resolve, reject) => {
+    req.spotifyApi.getUserPlaylists(user.spotifyId)
+    .then((data) => {
+      if (data.body.items) {
+        const playlists=data.body.items.map((playlist) => playlist.id);
+          return processPlaylists(playlists, user.spotifyId, req) ;
+      }
+      else {
+        console.log('no playlists');
+        reject();
+        return;
+      }
+    })
+    .then(songs => {
+      songController.likeSongs(songs, user.spotifyId);
+      resolve(songs);
+    })
+    .catch((err) => {
+      console.log(err, "error in songController");
+      reject(err);
+    });
   });
 };
 
