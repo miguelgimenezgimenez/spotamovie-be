@@ -1,0 +1,44 @@
+{
+  "name": "spotamovie-be",
+  "version": "1.0.0",
+  "description": "recommendation for movies",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "NODE_ENV=dev nodemon",
+    "test": "mocha --timeout 10000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelgimenezgimenez/spotamovie-be.git"
+  },
+  "author": "Miguel Gimenez <gimenezgimenezmiguel@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelgimenezgimenez/spotamovie-be/issues"
+  },
+  "homepage": "https://github.com/miguelgimenezgimenez/spotamovie-be#readme",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "buffer": "^5.0.2",
+    "express": "^4.14.0",
+    "jsonfile": "^2.4.0",
+    "moment": "^2.17.1",
+    "mongoose": "^4.8.0",
+    "morgan": "^1.7.0",
+    "nconf": "^0.8.4",
+    "path": "^0.12.7",
+    "raccoon": "git://github.com/miguelgimenezgimenez/recommendationRaccoon.git",
+    "redis": "^2.6.5",
+    "request": "^2.79.0",
+    "spotify-web-api-node": "^2.3.6",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0"
+  }
+}
