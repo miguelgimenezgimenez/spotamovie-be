@@ -95,6 +95,62 @@ describe('Users:', () => {
 
   });
 
+  it('it should update a user document', (done) => {
+    const newUser = new UserSchema(mocks.userObj);
+
+    const updateData = mocks.createObj('name', 'Johnathan Dow');
+
+    newUser.save((err) => {
+      if (err) throw err;
+      userController.updateUser(mocks.spotifyId, updateData)
+      .then((user) => {
+        try {
+          user.should.be.a('object');
+          user.should.have.property('name');
+          user.name.should.eq(updateData.name);
+          done();
+        } catch (err) {
+          done(err);
+        } finally {
+          UserSchema.findOneAndRemove({
+            _id: user._id
+          }, (err, removed) => {
+            if (err) throw err;
+          });
+        }
+      });
+    });
+
+  });
+
+  it('it should not update a user document if given a field that isn\'t part of the schema', (done) => {
+    const newUser = new UserSchema(mocks.userObj);
+
+    const updateData = mocks.createObj('nickname', 'JD');
+
+    newUser.save((err) => {
+      if (err) throw err;
+
+      userController.updateUser(mocks.spotifyId, updateData)
+      .then((user) => {
+        try {
+          user.should.be.a('object');
+          user.should.not.have.property('nickname');
+          done();
+        } catch (err) {
+          done(err);
+        } finally {
+          UserSchema.findOneAndRemove({
+            _id: user._id
+          }, (err, removed) => {
+            if (err) throw err;
+          });
+        }
+      });
+    });
+
+  });
+
   it('it should return an error when missing authorization header in request', (done) => {
     request.headers = mocks.authHeaderMissing;
 

@@ -1,5 +1,17 @@
 const mocks = {};
 
+mocks.createObj = (property, value) => {
+  const newObj = {};
+  newObj[property] = value;
+
+  return newObj;
+};
+
+mocks.updateObj = (obj, property, value) => {
+  obj.property = value;
+  return obj;
+};
+
 // mock Spotify data
 mocks.spotifyObj = {
   clientId : '123456',
