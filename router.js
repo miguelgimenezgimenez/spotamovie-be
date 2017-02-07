@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Buffer = require('buffer/').Buffer;
-const request = require('request');
 const loginController = require('./controllers/loginController');
 const movieController = require('./controllers/movieController');
 const userController = require('./controllers/userController');
