@@ -24,38 +24,39 @@ userController.me=((req,res,next)=>{
 userController.updateUser=(id,updateKey)=>{
   return new Promise((resolve,reject)=>{
     var options = {new: true};
-    const newValue=Object.assign({},updateKey,{loginDate:Date.now()});
+    const newValue=Object.assign({},updateKey,{ loginDate:Date.now()});
 
     UserSchema.findOneAndUpdate({spotifyId:id},
-      {
-        $set:newValue
-      },
-      options,((err,user)=>{
-        return resolve(user);
-      }));
-    });
-  };
+    {
+      $set:newValue
+    },
+    options,((err,user)=>{
+      return resolve(user);
+    }));
+  });
+};
 
-  userController.newUser=(userInfo,token)=>{
-    return new Promise((resolve,reject)=>{
-      const newUser =  new UserSchema({
-        name: userInfo.body.display_name,
-        email:userInfo.body.email,
-        spotifyId:userInfo.body.id,
-        userToken:token,
-        loginDate:Date.now(),
-        firstLogin: true
-      });
-      newUser.save((err,user) => {
-        if(err) {
-          console.log(err);
-          reject(err);
-        }
-        else {
-          //If no errors, send it back to the client
-          return resolve(user);
-        }
-      });
+userController.newUser=(userInfo,token)=>{
+  return new Promise((resolve,reject)=>{
+    const newUser =  new UserSchema({
+      name: userInfo.body.display_name,
+      email:userInfo.body.email,
+      spotifyId:userInfo.body.id,
+      userToken:token,
+      loginDate:Date.now(),
+      firstLogin: true
     });
-  };
-  module.exports=userController;
+    newUser.save((err,user) => {
+      if(err) {
+        console.log(err);
+        reject(err);
+      }
+      else {
+        //If no errors, send it back to the client
+        return resolve(user);
+      }
+    });
+  });
+};
+
+module.exports=userController;
