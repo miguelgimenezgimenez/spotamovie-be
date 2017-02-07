@@ -10,9 +10,8 @@ const UserSchema = new Schema(
     spotifyId: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     loginDate: {type:Number,required:true},
-    firstLogin:{type:Boolean, default:true},
+    firstLogin:{type:Boolean, default:false},
     alreadyRecommended:{type:Array, require: false}
-
   }
 );
 

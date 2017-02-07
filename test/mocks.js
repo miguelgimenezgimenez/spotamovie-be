@@ -1,6 +1,18 @@
 
 const mocks = {};
 
+mocks.createObj = (property, value) => {
+  const newObj = {};
+  newObj[property] = value;
+
+  return newObj;
+};
+
+mocks.updateObj = (obj, property, value) => {
+  obj.property = value;
+  return obj;
+};
+
 // mock Spotify data
 mocks.spotifyObj = {
   clientId : '123456',
@@ -34,7 +46,15 @@ mocks.spotifyAuthError = {
 
 mocks.spotifyAuthErrReponse = {
   statusCode: 400,
-  body: mocks.spotifyMockError
+  body: mocks.spotifyAuthError
+};
+
+mocks.authHeader = {
+  authorization: 'Bearer ' + mocks.accessToken
+};
+
+mocks.authHeaderMissing = {
+  authorization: null
 };
 mocks.spotifyId = 'spotify234234';
 
@@ -54,43 +74,83 @@ mocks.userProfile = {
   }
 };
 
+mocks.playlistId1 = 11111;
+mocks.playlistId2 = 22222;
+
 mocks.playlists = {
   body: {
-    items: [{id: 11111}, {id: 22222}]
+    items: [{id: mocks.playlistId1}, {id: mocks.playlistId2}]
   }
 };
+
+mocks.track1 = 121212;
+mocks.track2 = 232323;
+mocks.track3 = 343434;
+mocks.track4 = 454545;
 
 mocks.tracks = {
   body: {
     items: [
-      {track: {id: 121212}},
-      {track: {id: 232323}},
-      {track: {id: 343434}},
-      {track: {id: 454545}}
+      {track: {id: mocks.track1}},
+      {track: {id: mocks.track2}},
+      {track: {id: mocks.track3}},
+      {track: {id: mocks.track4}}
     ]
   }
 };
 
 // mock users collection data
-mocks.userDoc = {
-  display_name: 'John Doe',
-  email: 'jdoe@email.com',
-  id: mocks.spotifyId,
-  firstLogin: true
+mocks.userInfo = {
+  display_name: mocks.userProfile.body.display_name,
+  email: mocks.userProfile.body.email,
+  id: mocks.spotifyId
 };
 
-mocks.userDocInvalid1 = {
+mocks.userInfoInvalid1 = {
   token: mocks.accessToken,
   loginDate: Date.now()
 };
 
-mocks.userDocInvalid2 = {
+mocks.userInfoInvalid2 = {
   spotifyId: mocks.spotifyId,
   loginDate: Date.now()
 };
 
-mocks.userDocInvalid3 = {
+mocks.userInfoInvalid3 = {
   spotifyId: mocks.spotifyId,
   token: mocks.accessToken
 };
-module.exports=mocks;
+
+
+mocks.userObj = {
+  "name": mocks.userProfile.body.display_name,
+  "spotifyId": mocks.spotifyId,
+  "userToken": mocks.accessToken,
+  loginDate: Date.now()
+};
+
+mocks.userDocNew = {
+    "_id" : "1234567890abcdefghijk",
+    "name" : mocks.userProfile.body.display_name,
+    "email" : mocks.userProfile.body.email,
+    "spotifyId" : mocks.spotifyId,
+    "userToken" : mocks.accessToken,
+    "loginDate" : Date.now(),
+    "firstLogin" : true,
+    "createdAt" : Date.now(),
+    "__v" : 0
+};
+
+mocks.userDocOld = {
+    "_id" : "1234567890abcdefghijk",
+    "name" : mocks.userProfile.body.display_name,
+    "email" : mocks.userProfile.body.email,
+    "spotifyId" : mocks.spotifyId,
+    "userToken" : mocks.accessToken,
+    "loginDate" : 1481054578000,
+    "firstLogin" : false,
+    "createdAt" : "2016-12-01",
+    "__v" : 0
+};
+
+module.exports = mocks;
