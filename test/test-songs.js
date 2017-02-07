@@ -78,7 +78,6 @@ describe('Songs:', () => {
     try {
       Promise.resolve(songController.storePlaylists(user, access_token, request))
       .then((songs) =>{
-        console.log('songs after func call', songs);
         songs.should.be.null;
         done();
       })
