@@ -110,6 +110,7 @@ describe('Login:', () => {
     stubAuth = Stub.createStub(request.spotifyApi, 'authorizationCodeGrant', mocks.spotifyAuthErrReponse);
 
     response.send = (obj) => {
+      console.log(obj, ": obj");
       try {
         response.status.should.be.eq(400);
         obj.should.be.eq(mocks.spotifyAuthError);
