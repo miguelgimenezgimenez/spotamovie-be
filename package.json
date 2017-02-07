@@ -28,7 +28,7 @@
     "morgan": "^1.7.0",
     "nconf": "^0.8.4",
     "path": "^0.12.7",
-    "raccoon": "git://github.com/guymorita/recommendationRaccoon.git#be075f3de8235ed30aaeac79b83d40a1d7f0a6f8",
+    "raccoon": "^0.2.5",
     "redis": "2.6.5",
     "request": "^2.79.0",
     "spotify-web-api-node": "^2.3.6",

@@ -1,9 +1,8 @@
 const request = require('request');
 const userController = require('./userController');
 const UserSchema =require('../models/User');
-// const raccoon = require('raccoon');
 const nconf = require('../config/nconf.js');
-const raccoon = require('../config/raccoon.js');
+const raccoon = require('raccoon');
 const _ = require('underscore');
 
 var jsonfile = require('jsonfile')
@@ -22,7 +21,7 @@ movieController.like=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.liked(userId,movieId, ()=>{
+      raccoon.liked(userId,movieId ).then(()=>{
         // userId in userLikes? userLikes[userId].push(movieId):userLikes[userId]=[movieId]
         // jsonfile.writeFile(file, obj}, function(err) {
         //   console.error(err)
@@ -43,7 +42,7 @@ movieController.dislike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.disliked(userId,movieId, ()=>{
+      raccoon.disliked(userId,movieId).then(()=>{
         console.log(userId,'disliked',movieId);
       });
       return res.sendStatus(200);
@@ -53,6 +52,7 @@ movieController.dislike=(req,res)=>{
 };
 
 movieController.unlike=(req,res)=>{
+  console.log('requestiong', ": 'requestiong'");
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
@@ -60,8 +60,8 @@ movieController.unlike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.unliked(userId,movieId, ()=>{
-        console.log(userId,'unliked',movieId);
+      raccoon.unliked(userId, movieId).then(() => {
+        console.log(userId, ": userId");
       });
       return res.send(movieId);
     }
@@ -77,7 +77,7 @@ movieController.undislike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.undisliked(userId,movieId, ()=>{
+      raccoon.undisliked(userId,movieId).then(()=>{
         console.log(userId,'undisliked',movieId);
       });
       return res.sendStatus(200);
@@ -97,7 +97,7 @@ movieController.allLikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allLikedFor(userId,(results) => {
+      raccoon.allLikedFor(userId).then((results) => {
         const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
@@ -116,7 +116,7 @@ movieController.alldislikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allDislikedFor(userId,(results) => {
+      raccoon.allDislikedFor(userId).then((results) => {
         const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
@@ -137,7 +137,7 @@ movieController.recommendation=(req,res)=>{
       const userId=response[0].spotifyId;
       const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
-      raccoon.recommendFor(userId, 100,rec => {
+      raccoon.recommendFor(userId, 100).then(rec => {
         rec=_.difference(rec,alreadyRecommended).filter(like =>!like.includes('SP'));
         if (rec.length===0) {
           let page =Math.floor(Math.random()*40+1);
@@ -171,7 +171,7 @@ movieController.recommendation=(req,res)=>{
 
 movieController.findRatedMovies=(userId)=>{
   return new Promise((resolve,reject)=>{
-    raccoon.allWatchedFor(userId,results => {
+    raccoon.allWatchedFor(userId).then(results => {
       const ratedMovies= results.filter(like =>!like.includes('SP'));
       return resolve(ratedMovies);
     });
