@@ -1,11 +1,11 @@
 const request = require('request');
 const userController = require('./userController');
 const UserSchema =require('../models/User');
-// const raccoon = require('raccoon');
 const nconf = require('../config/nconf.js');
-const raccoon = require('../config/raccoon.js');
+const raccoon = require('raccoon');
 const _ = require('underscore');
 
+const userLikes={};
 
 const movieController = {};
 const url =`https://api.themoviedb.org/3/discover/movie?api_key=${nconf.get('TMDB_API_KEY')}`;
@@ -18,7 +18,8 @@ movieController.like=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.liked(userId,movieId, ()=>{
+      raccoon.liked(userId,movieId ).then(()=>{
+       
         console.log(userId,'liked',movieId);
       });
       return res.sendStatus(200);
@@ -35,7 +36,8 @@ movieController.dislike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.disliked(userId,movieId, ()=>{
+      raccoon.disliked(userId,movieId).then(()=>{
+
         console.log(userId,'disliked',movieId);
       });
       return res.sendStatus(200);
@@ -52,8 +54,9 @@ movieController.unlike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.unliked(userId,movieId, ()=>{
-        console.log(userId,'unliked',movieId);
+      raccoon.unliked(userId, movieId).then(() => {
+        console.log(userId, "unliked:", movieId);
+
       });
       return res.send(movieId);
     }
@@ -69,7 +72,8 @@ movieController.undislike=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
-      raccoon.undisliked(userId,movieId, ()=>{
+      raccoon.undisliked(userId,movieId).then(()=>{
+
         console.log(userId,'undisliked',movieId);
       });
       return res.sendStatus(200);
@@ -89,7 +93,8 @@ movieController.allLikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allLikedFor(userId,(results) => {
+      raccoon.allLikedFor(userId).then((results) => {
+
         const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
@@ -108,7 +113,8 @@ movieController.alldislikes=(req,res)=>{
     if (response.length>0) {
       const userId=response[0].spotifyId;
       let movie;
-      raccoon.allDislikedFor(userId,(results) => {
+      raccoon.allDislikedFor(userId).then((results) => {
+
         const ratedMovies= results.filter(like =>!like.includes('SP')).slice(0,39);
         return res.send({movies:ratedMovies});
       });
@@ -129,17 +135,27 @@ movieController.recommendation=(req,res)=>{
       const userId=response[0].spotifyId;
       const alreadyRecommended=response[0].alreadyRecommended;
       let movie;
-      raccoon.recommendFor(userId, 100,rec => {
+      
+      raccoon.recommendFor(userId, 100).then(rec => {
         rec=_.difference(rec,alreadyRecommended).filter(like =>!like.includes('SP'));
-        if (rec.length===0) {
-          let page =Math.floor(Math.random()*40+1);
 
+        if (rec.length===0) {
+          //======================================================
+          // NO RECOMENDATIONS FOUND
+          //======================================================
+          let page =Math.floor(Math.random()*40+1);
 
           request.get(`${url}&page=${page}`, (error, response, body) => {
             let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
-            findRatedMovies(userId)
+            movieController.findRatedMovies(userId)
             .then(response=>{
+
+              response=response.concat(alreadyRecommended);// add movies already recommended to already ratedMovies
+
               const movie=(handleMovies(receivedMovies,1,response)[0]);
+              alreadyRecommended.push(movie);
+              userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
+      
               res.send({
                 "movieId": movie,
               });
@@ -161,9 +177,9 @@ movieController.recommendation=(req,res)=>{
   });
 };
 
-const findRatedMovies=(userId)=>{
+movieController.findRatedMovies=(userId)=>{
   return new Promise((resolve,reject)=>{
-    raccoon.allWatchedFor(userId,results => {
+    raccoon.allWatchedFor(userId).then(results => {
       const ratedMovies= results.filter(like =>!like.includes('SP'));
       return resolve(ratedMovies);
     });
@@ -198,10 +214,10 @@ movieController.survey=(req,res)=>{
       // GET TMDB movies
       //======================================================
       let page =Math.floor(Math.random()*50+1);
-
       request.get(`${url}&page=${page}`, (error, response, body) => {
         let receivedMovies=JSON.parse(body).results.filter(movie => (movie.poster_path)).map(movie=>movie.id.toString())
-        findRatedMovies(userId)
+        movieController.findRatedMovies(userId)
+
         .then(response=>{
           ratedMovies=response;
           moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
@@ -212,6 +228,7 @@ movieController.survey=(req,res)=>{
             let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
             moviesToBeSent=moviesToBeSent.concat(handleMovies(receivedMovies,numberOfmovies,ratedMovies));
             ratedMovies=ratedMovies.concat(moviesToBeSent);
+
             //GET WEIRD MOVIES
             page+=3;
             request.get(`${url}&sort_by=popularity.desc.asc&page=${page+50}`, (error, response, body) => {

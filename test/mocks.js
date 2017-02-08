@@ -1,3 +1,4 @@
+
 const mocks = {};
 
 mocks.createObj = (property, value) => {
@@ -55,7 +56,6 @@ mocks.authHeader = {
 mocks.authHeaderMissing = {
   authorization: null
 };
-
 mocks.spotifyId = 'spotify234234';
 
 mocks.userProfile = {
@@ -121,6 +121,7 @@ mocks.userInfoInvalid3 = {
   token: mocks.accessToken
 };
 
+
 mocks.userObj = {
   "name": mocks.userProfile.body.display_name,
   "spotifyId": mocks.spotifyId,
@@ -135,7 +136,7 @@ mocks.userDocNew = {
     "spotifyId" : mocks.spotifyId,
     "userToken" : mocks.accessToken,
     "loginDate" : Date.now(),
-    "firstLogin" : false,
+    "firstLogin" : true,
     "createdAt" : Date.now(),
     "__v" : 0
 };

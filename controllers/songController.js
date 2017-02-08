@@ -80,11 +80,12 @@ songController.likeSongs = (songs, userId) => {
   try {
     songs.forEach(song => {
       const songId=`SP${song}`;
-      raccoon.allLikedFor(userId,results=> {
+      raccoon.allLikedFor(userId).then(results=> {
         for (var i = 0; i < results.length; i++) {
           if (songId===results[i]) return;
         }
-        raccoon.liked(userId,songId, ()=>{
+        raccoon.liked(userId,songId).then(()=>{
+
           console.log(userId,`liked`, songId);
         });
       });
