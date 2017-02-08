@@ -74,19 +74,27 @@ mocks.userProfile = {
   }
 };
 
+mocks.playlistId1 = 11111;
+mocks.playlistId2 = 22222;
+
 mocks.playlists = {
   body: {
-    items: [{id: 11111}, {id: 22222}]
+    items: [{id: mocks.playlistId1}, {id: mocks.playlistId2}]
   }
 };
+
+mocks.track1 = 121212;
+mocks.track2 = 232323;
+mocks.track3 = 343434;
+mocks.track4 = 454545;
 
 mocks.tracks = {
   body: {
     items: [
-      {track: {id: 121212}},
-      {track: {id: 232323}},
-      {track: {id: 343434}},
-      {track: {id: 454545}}
+      {track: {id: mocks.track1}},
+      {track: {id: mocks.track2}},
+      {track: {id: mocks.track3}},
+      {track: {id: mocks.track4}}
     ]
   }
 };
