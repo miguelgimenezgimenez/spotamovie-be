@@ -23,12 +23,15 @@ loginController.login = (req, res, next) => {
       // set access token
       req.spotifyApi.setAccessToken(data.body['access_token']);
       req.spotifyApi.setRefreshToken(data.body['refresh_token']);
+      return data;
     } else {
       res.status = data.statusCode;
       res.send(data.body);
+      return data.body;
     }
   }, (err) => console.log(err))
-  .then(() => {
+  .then((result) => {
+    if (result.error) return;
     req.spotifyApi.getMe()
     .then(data => {
       return data;
