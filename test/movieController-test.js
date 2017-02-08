@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 const mongoose = require('mongoose');
 const request = require('request');
-
+const raccoon = require('raccoon');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const sinon = require('sinon');
@@ -105,9 +105,8 @@ describe('movie controller:', () => {
 
     movieController.survey(req, res);
   });
-  it('should return not repeat movies', (done) => {
+  it('should return not repeat movies on survey', (done) => {
     mocks.userDocNew.firstLogin=true;
-
     let res={};
     res.send = (object) => {
       try {
@@ -119,7 +118,47 @@ describe('movie controller:', () => {
         done(err);
       }
     };
-
     movieController.survey(req, res);
+  });
+  it('should return not repeat movies on recommendation', (done) => {
+    let res={};
+
+    mocks.userDocNew.alreadyRecommended=['4','5']
+    res.send = (object) => {
+      console.log(object, ": object");
+      try {
+        object.should.be.a('object');
+        object.should.have.property('movieId');
+        object.should.eql({movieId:'6'});
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+    movieController.recommendation(req, res);
+  });
+  it('should return not repeat movies on raccoon recommendation', (done) => {
+    let res={};
+    const stubRecomendation=Stub.createStub(raccoon,'recommendFor',[
+     '6',
+     '7',
+     '8',
+   ])
+    mocks.userDocNew.alreadyRecommended=['4','5','6']
+    res.send = (object) => {
+      console.log(object, ": object");
+      try {
+        object.should.be.a('object');
+        object.should.have.property('movieId');
+        object.should.eql({movieId:'7'});
+        done();
+      } catch (err) {
+        done(err);
+      }
+    };
+    movieController.recommendation(req, res);
+
+    Stub.removeStub(stubRecomendation);
+
   });
 })

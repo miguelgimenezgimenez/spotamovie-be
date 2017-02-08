@@ -52,7 +52,6 @@ movieController.dislike=(req,res)=>{
 };
 
 movieController.unlike=(req,res)=>{
-  console.log('requestiong', ": 'requestiong'");
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
   const token =req.headers.authorization.split(' ')[1];
   UserSchema.find({userToken:token})
@@ -139,15 +138,23 @@ movieController.recommendation=(req,res)=>{
       let movie;
       raccoon.recommendFor(userId, 100).then(rec => {
         rec=_.difference(rec,alreadyRecommended).filter(like =>!like.includes('SP'));
-        if (rec.length===0) {
-          let page =Math.floor(Math.random()*40+1);
 
+        if (rec.length===0) {
+          //======================================================
+          // NO RECOMENDATIONS FOUND
+          //======================================================
+          let page =Math.floor(Math.random()*40+1);
 
           request.get(`${url}&page=${page}`, (error, response, body) => {
             let receivedMovies=JSON.parse(body).results.filter((movie) => movie.poster_path).map((movie=>movie.id.toString()));
             movieController.findRatedMovies(userId)
             .then(response=>{
+
+              response=response.concat(alreadyRecommended);// add movies already recommended to already ratedMovies
+              
               const movie=(handleMovies(receivedMovies,1,response)[0]);
+              alreadyRecommended.push(movie);
+              userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
               res.send({
                 "movieId": movie,
               });
