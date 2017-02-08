@@ -85,6 +85,7 @@ songController.likeSongs = (songs, userId) => {
           if (songId===results[i]) return;
         }
         raccoon.liked(userId,songId).then(()=>{
+
           console.log(userId,`liked`, songId);
         });
       });
