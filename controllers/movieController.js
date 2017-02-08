@@ -60,7 +60,7 @@ movieController.unlike=(req,res)=>{
       const userId=response[0].spotifyId;
       const movieId=req.params.movieId;
       raccoon.unliked(userId, movieId).then(() => {
-        console.log(userId, ": userId");
+        console.log(userId, "unliked:", movieId);
       });
       return res.send(movieId);
     }
@@ -151,7 +151,7 @@ movieController.recommendation=(req,res)=>{
             .then(response=>{
 
               response=response.concat(alreadyRecommended);// add movies already recommended to already ratedMovies
-              
+
               const movie=(handleMovies(receivedMovies,1,response)[0]);
               alreadyRecommended.push(movie);
               userController.updateUser(userId,{alreadyRecommended:alreadyRecommended});
