@@ -115,22 +115,42 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 ## Recommendation Example
 
-**User 1**								**User 2**
+**User 1**								
 
-​:radio: <u>Songs Liked</u>						:radio: <u>Songs Liked</u>
+📻 <u>Songs Liked</u>						
 
-"We are the Champions"	< ==== >		"We are the Champions"
+"We are the Champions"			
 
-"Imagine"							"We Built This City"
+"Imagine"							
 
-​:cinema: <u>Movies Liked</u>						:cinema: <u>Movies Liked</u>
+​:cinema: <u>Movies Liked</u>					
 
-*Star Wars*							*E.T.*
+*Star Wars*							
+
+*Titanic*
 
 
 
-**Possible Recommendations**
+**User 2**
 
-**User 1**: ***E.T.***
+📻 <u>Songs Liked</u>
 
-**User 2**: ***Star Wars***
+"We are the Champions"
+
+"We Built This City"
+
+​:cinema: <u>Movies Liked</u>
+
+*E.T.*
+
+*Contact*
+
+
+
+​:+1: Common Liked Song: "We are the Champions"
+
+**Possible Movie Recommendations**:
+
+​:point_right: User 1: ***E.T.***, ***Contact*** 
+
+​:point_right: User 2: ***Star Wars***, ***Titanic***
