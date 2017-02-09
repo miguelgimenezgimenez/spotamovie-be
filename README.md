@@ -96,7 +96,7 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 **Databases**: MongoDB, Redis
 
-**Recommendation** Engine: Raccoon
+**Recommendation Engine**: Raccoon
 
 **Host**: Heroku
 
@@ -120,10 +120,8 @@ Github: https://github.com/johnandblue/spotamovieFE
 | ------------------- | ------------------------ | ------------------------ |
 | 📻 **Songs Liked**  | \* "We are the Champions" | \* "We are the Champions" |
 |                     | "Imagine"                | "We Built This City"     |
-|                     |                          |                          |
 | 🎦 **Movies Liked** | *Star Wars*              | *E.T.*                   |
 |                     | *Titanic*                | *Contact*                |
-|                     |                          |                          |
 | **Possible Recs**   | *E.T*                    | *Star Wars*              |
 |                     | *Contact*                | *Titanic*                |
 
