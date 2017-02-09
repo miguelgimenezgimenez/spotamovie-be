@@ -82,7 +82,7 @@ Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamo
 
 Check out our iOS App
 
-<img src="./Landing.png" style="width:200px"/>
+![spotamovie app](./Landing.png)
 
 
 
