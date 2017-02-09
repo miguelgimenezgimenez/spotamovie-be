@@ -93,6 +93,7 @@ Github: https://github.com/johnandblue/spotamovieFE
 ## Tech Stack
 
 **Server**: Node.js / Express
+
 **Databases**: MongoDB, Redis
 
 **Recommendation** Engine: Raccoon
@@ -115,42 +116,15 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 ## Recommendation Example
 
-**User 1**								
+|                       | User 1                   | User 2                   |
+| --------------------- | ------------------------ | ------------------------ |
+| 📻 <u>Songs Liked</u> | ⭐︎"We are the Champions" | ⭐︎"We are the Champions" |
+|                       | "Imagine"                | "We Built This City"     |
+|                       |                          |                          |
+| 🎦 Movies Liked       | *Star Wars*              | *E.T.*                   |
+|                       | *Titanic*                | *Contact*                |
+|                       |                          |                          |
+| Possible Recs         | *E.T*                    | *Star Wars*              |
+|                       | *Contact*                | *Titanic*                |
 
-📻 <u>Songs Liked</u>						
-
-"We are the Champions"			
-
-"Imagine"							
-
-​:cinema: <u>Movies Liked</u>					
-
-*Star Wars*							
-
-*Titanic*
-
-
-
-**User 2**
-
-📻 <u>Songs Liked</u>
-
-"We are the Champions"
-
-"We Built This City"
-
-​:cinema: <u>Movies Liked</u>
-
-*E.T.*
-
-*Contact*
-
-
-
-​:+1: Common Liked Song: "We are the Champions"
-
-**Possible Movie Recommendations**:
-
-​:point_right: User 1: ***E.T.***, ***Contact*** 
-
-​:point_right: User 2: ***Star Wars***, ***Titanic***
+⭐︎ = *Common Liked Song*
