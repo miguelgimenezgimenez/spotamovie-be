@@ -116,15 +116,15 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 ## Recommendation Example
 
-|                       | User 1                   | User 2                   |
-| --------------------- | ------------------------ | ------------------------ |
-| 📻 <u>Songs Liked</u> | ⭐︎"We are the Champions" | ⭐︎"We are the Champions" |
-|                       | "Imagine"                | "We Built This City"     |
-|                       |                          |                          |
-| 🎦 Movies Liked       | *Star Wars*              | *E.T.*                   |
-|                       | *Titanic*                | *Contact*                |
-|                       |                          |                          |
-| Possible Recs         | *E.T*                    | *Star Wars*              |
-|                       | *Contact*                | *Titanic*                |
+|                     | User 1                   | User 2                   |
+| ------------------- | ------------------------ | ------------------------ |
+| 📻 **Songs Liked**  | \* "We are the Champions" | \* "We are the Champions" |
+|                     | "Imagine"                | "We Built This City"     |
+|                     |                          |                          |
+| 🎦 **Movies Liked** | *Star Wars*              | *E.T.*                   |
+|                     | *Titanic*                | *Contact*                |
+|                     |                          |                          |
+| **Possible Recs**   | *E.T*                    | *Star Wars*              |
+|                     | *Contact*                | *Titanic*                |
 
-⭐︎ = *Common Liked Song*
+\* = *Common Liked Song*
