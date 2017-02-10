@@ -14,7 +14,9 @@ Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamo
 
 ## :iphone:Spotamovie iOS App
 
-Check out our iOS App
+Check out our iOS App:
+
+How long do you spend looking for a movie rather than actually watching a movie? Our app solves that problem for you! Spot A Movie is a mobile app, developed in React Native that allows users to connect with their Spotify accounts, and get movie recommendations based on their Spotify playlists.
 
 ![spotamovie app](./Landing.png)
 
