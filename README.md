@@ -6,7 +6,7 @@ Connect to the Spotamovie API to get movie recommendations based on your Spotify
 
 
 
-# Spotamovie API
+## Spotamovie API
 
 Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamovie/reference
 
@@ -64,6 +64,9 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 ## Project Contributors
 [Miguel Gimenez](https://github.com/miguelgimenezgimenez)
+
 [Rod Reyes](https://github.com/2rod)
+
 [JC Garcia](https://github.com/johnandblue)
+
 [Varun Agarwal](https://github.com/vavarun)
