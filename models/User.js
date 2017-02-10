@@ -6,12 +6,12 @@ const UserSchema = new Schema(
   {
     name: { type: String, required: false },
     email: { type: String, required: false },
-    userToken: { type: String, required: false },
-    spotifyId: { type: String, required: false },
+    userToken: { type: String, required: true },
+    spotifyId: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     loginDate: {type:Number,required:true},
     firstLogin:{type:Boolean, default:false},
-    
+    alreadyRecommended:{type:Array, require: false}
   }
 );
 

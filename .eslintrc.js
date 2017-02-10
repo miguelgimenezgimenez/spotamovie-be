@@ -21,6 +21,9 @@ module.exports = {
             "off",
             2
         ],
+        "semi": [
+            "off"
+        ],
         "linebreak-style": [
             "error",
             "unix"
@@ -29,10 +32,7 @@ module.exports = {
             "off",
             "single"
         ],
-        "semi": [
-            "error",
-            "always"
-        ],
+
         "no-unused-vars":0,
         "no-console":0
     }

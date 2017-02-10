@@ -6,23 +6,27 @@ const loginController = require('./loginController');
 let songs = [];
 
 songController.storePlaylists = (user, access_token, req) => {
-  req.spotifyApi.getUserPlaylists(user.spotifyId)
-  .then((data) => {
-    if (data.body.items) {
-      const playlists=data.body.items.map((playlist) => playlist.id);
-        return processPlaylists(playlists, user.spotifyId, req) ;
-    }
-    else {
-      console.log('no playlists');
-      return;
-    }
-  })
-  .then(songs => {
-    songController.likeSongs(songs, user.spotifyId);
-    return songs;
-  })
-  .catch((err) => {
-    console.log(err, "error in songController");
+  return new Promise((resolve, reject) => {
+    req.spotifyApi.getUserPlaylists(user.spotifyId)
+    .then((data) => {
+      if (data.body.items) {
+        const playlists=data.body.items.map((playlist) => playlist.id);
+          return processPlaylists(playlists, user.spotifyId, req) ;
+      }
+      else {
+        console.log('no playlists');
+        reject();
+        return;
+      }
+    })
+    .then(songs => {
+      songController.likeSongs(songs, user.spotifyId);
+      resolve(songs);
+    })
+    .catch((err) => {
+      console.log(err, "error in songController");
+      reject(err);
+    });
   });
 };
 
@@ -52,7 +56,9 @@ const getSongs = (playlists, userId, req) => {
         }
         count++;
         if (count===playlists.length) return resolve(allSongs);
-
+      })
+      .catch(err=>{
+        console.log(err, 'err in getsongs');
       });
     });
   });
@@ -66,7 +72,7 @@ const getSongsByPlaylist=(playlist_id, userId, req)=>{
     })
     .catch((err) => {
       resolve({});
-      // console.log(err, "error retrieving playlist songs");
+
     });
   });
 };
@@ -75,11 +81,13 @@ songController.likeSongs = (songs, userId) => {
   try {
     songs.forEach(song => {
       const songId=`SP${song}`;
-      raccoon.allLikedFor(userId,results=> {
+      raccoon.allLikedFor(userId).then(results=> {
         for (var i = 0; i < results.length; i++) {
           if (songId===results[i]) return;
         }
-        raccoon.liked(userId,songId, ()=>{
+        raccoon.liked(userId,songId).then(()=>{
+
+          console.log(userId,`liked`, songId);
         });
       });
     });
