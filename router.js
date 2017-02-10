@@ -11,6 +11,7 @@ router.post('/movies/:movieId/dislike', movieController.dislike);
 router.post('/movies/:movieId/unlike', movieController.unlike);
 router.post('/movies/:movieId/undislike', movieController.undislike);
 router.get('/movies/recommendation', movieController.recommendation);
+router.get('/movies/alreadyRecommended', movieController.alreadyRecommended);
 router.get('/movies/survey', movieController.survey);
 router.get('/movies/liked', movieController.allLikes);
 router.get('/movies/disliked', movieController.alldislikes);

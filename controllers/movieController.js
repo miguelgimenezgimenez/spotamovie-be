@@ -95,7 +95,7 @@ movieController.allLikes=(req,res)=>{
       let movie;
       raccoon.allLikedFor(userId,(results) => {
         console.log(results);
-          const ratedMovies= results.filter(like =>!like.includes('SP'));
+        const ratedMovies= results.filter(like =>!like.includes('SP'));
         return res.send(ratedMovies);
       });
     }else{
@@ -124,6 +124,20 @@ movieController.alldislikes=(req,res)=>{
   });
 };
 
+
+movieController.alreadyRecommended=(req,res)=>{
+  if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');
+  const token =req.headers.authorization.split(' ')[1];
+  UserSchema.find({userToken:token})
+  .then(response=>{
+    if (response.length>0) {
+      const alreadyRecommended=response[0].alreadyRecommended.filter(like =>{return like && !like.includes('SP')});
+      res.send(alreadyRecommended);
+    }else{
+      return res.sendStatus(401);
+    }
+  })
+}
 
 movieController.recommendation=(req,res)=>{
   if (!req.headers.authorization) return res.sendStatus(400, 'missing authorization header');

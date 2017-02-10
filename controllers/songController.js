@@ -72,7 +72,6 @@ const getSongsByPlaylist=(playlist_id, userId, req)=>{
     })
     .catch((err) => {
       resolve({});
-
     });
   });
 };
