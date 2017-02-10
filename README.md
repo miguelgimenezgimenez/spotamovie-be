@@ -10,6 +10,7 @@ Connect to the Spotamovie API to get movie recommendations based on your Spotify
 
 Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamovie/reference
 
+API Endpoint: https://spotamovie.herokuapp.com
 
 
 ## :iphone:Spotamovie iOS App
