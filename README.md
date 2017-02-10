@@ -1,5 +1,7 @@
 # spotamovie :movie_camera:
 
+[![ Build Status](https://travis-ci.org/miguelgimenezgimenez/spotamovie-be.svg?branch=master)](https://travis-ci.org/miguelgimenezgimenez/spotamovie-be)
+
 Connect to the Spotamovie API to get movie recommendations based on your Spotify playlists.
 
 
@@ -7,74 +9,6 @@ Connect to the Spotamovie API to get movie recommendations based on your Spotify
 # Spotamovie API
 
 Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamovie/reference
-
-
-
-**API Endpoint**: https://spotamovie.herokuapp.com
-
-
-
-**Spotify authentication**
-
-```javascript
-/login
-```
-
-
-
-**Like a movie**
-
-```javascript
-/movies/{movie_id}/like
-```
-
-
-
-**Dislike a movie**
-
-```javascript
-/movies/{movie_id}/dislike
-```
-
-
-
-**Get a movie recommendation**
-
-```javascript
-/movies/recommendation
-```
-
-
-
-**Get movies for movie survey**
-
-```javascript
-/movies/survey
-```
-
-
-
-**Get a list of all liked movies**
-
-```javascript
-/movies/liked
-```
-
-
-
-**Unlike a movie**
-
-```javascript
-/movies/{movie_id}/unlike
-```
-
-
-
-**Undislike a movie**
-
-```javascript
-/movies/{movie_id}/undislike
-```
 
 
 
@@ -96,7 +30,7 @@ Github: https://github.com/johnandblue/spotamovieFE
 
 **Databases**: MongoDB, Redis
 
-**Recommendation Engine**: Raccoon
+**Recommendation Engine**: [Raccoon](https://github.com/guymorita/recommendationRaccoon)
 
 **Host**: Heroku
 
@@ -126,3 +60,10 @@ Github: https://github.com/johnandblue/spotamovieFE
 |                     | *Contact*                | *Titanic*                |
 
 \* = *Common Liked Song*
+
+
+## Project Contributors
+[Miguel Gimenez](https://github.com/miguelgimenezgimenez)
+[Rod Reyes](https://github.com/2rod)
+[JC Garcia](https://github.com/johnandblue)
+[Varun Agarwal](https://github.com/vavarun)
