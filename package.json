@@ -13,7 +13,7 @@
     "url": "git+https://github.com/miguelgimenezgimenez/spotamovie-be.git"
   },
   "author": "Miguel Gimenez <gimenezgimenezmiguel@gmail.com>",
-    "license": "ISC",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/miguelgimenezgimenez/spotamovie-be/issues"
   },
@@ -30,7 +30,6 @@
     "path": "^0.12.7",
     "raccoon": "git://github.com/miguelgimenezgimenez/recommendationRaccoon.git",
     "redis": "^2.6.5",
-
     "request": "^2.79.0",
     "spotify-web-api-node": "^2.3.6",
     "underscore": "^1.8.3"
