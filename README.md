@@ -10,20 +10,18 @@ Connect to the Spotamovie API to get movie recommendations based on your Spotify
 
 Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamovie/reference
 
-API Endpoint: https://spotamovie.herokuapp.com
 
+## :iphone:Spotamovie iOS App (front-end)
 
-## :iphone:Spotamovie iOS App
+Check out the iOS App that consumes the Spotamovie API:
 
-Check out our iOS App:
-
-How long do you spend looking for a movie rather than actually watching a movie? Our app solves that problem for you! Spot A Movie is a mobile app, developed in React Native that allows users to connect with their Spotify accounts, and get movie recommendations based on their Spotify playlists.
+How long do you spend looking for a movie rather than actually watching a movie? Our app solves that problem for you! Spotamovie is a mobile app, developed in React Native that allows users to connect with their Spotify accounts, and get movie recommendations based on their Spotify playlists.
 
 ![spotamovie app](./Landing.png)
 
 
 
-Github: https://github.com/johnandblue/spotamovieFE
+Github for Spotamovie iOS app: https://github.com/2rod/spotamovie-frontend
 
 
 
