@@ -3,14 +3,14 @@
 [![ Build Status](https://travis-ci.org/miguelgimenezgimenez/spotamovie-be.svg?branch=master)](https://travis-ci.org/miguelgimenezgimenez/spotamovie-be)
 
 Connect to the Spotamovie API to get movie recommendations based on your Spotify playlists.
+This is the backend for the spotamovie project 
+Github: https://github.com/johnandblue/spotamovieFE
 
 
 
 ## Spotamovie API
 
 Full documentation available on Apiary: https://jsapi.apiary.io/previews/spotamovie/reference
-
-API Endpoint: https://spotamovie.herokuapp.com
 
 
 ## :iphone:Spotamovie iOS App
@@ -23,7 +23,6 @@ How long do you spend looking for a movie rather than actually watching a movie?
 
 
 
-Github: https://github.com/johnandblue/spotamovieFE
 
 
 
