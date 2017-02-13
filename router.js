@@ -15,4 +15,8 @@ router.get('/movies/survey', movieController.survey);
 router.get('/movies/liked', movieController.allLikes);
 router.get('/movies/disliked', movieController.alldislikes);
 
+router.get('/', (req, res) => {
+  res.send('Full documentation on the Spotamovie API available on Apiary <a href="https://jsapi.apiary.io/previews/spotamovie/reference">here</a>.');
+});
+
 module.exports = router;
